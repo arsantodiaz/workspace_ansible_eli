@@ -1,0 +1,147 @@
+---
+# Howto: ansible-playbook audit_csv.yml --vault-password-file ~/.vault_pass
+
+# ==========================================
+# PLAY 1: Persiapan File (Header Baru)
+# ==========================================
+- name: 1. Siapkan File Laporan
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Buat Header CSV (Ditambah Kolom Status)
+      copy:
+        dest: "{{ playbook_dir }}/laporan_user_admin.csv"
+        # Kita tambah kolom 'Status_Akun' di tengah
+        content: "Hostname,IP_Address,Username,Group_Type,Status_Akun,Estimasi_Dibuat,Terakhir_Login\n"
+        force: yes
+
+# ==========================================
+# PLAY 2: Mining Data User LINUX
+# ==========================================
+- name: 2a. Mining Data User Linux
+  hosts: server_uat
+  become: yes
+  vars:
+    target_group: "{{ 'wheel' if ansible_os_family == 'RedHat' else 'sudo' }}"
+
+  tasks:
+    - name: Gathering Facts Linux
+      setup:
+
+    - name: Ambil Data User Linux Lengkap
+      shell: |
+        USERS=$(getent group {{ target_group }} | awk -F: '{print $4}' | tr ',' ' ')
+        for U in $USERS; do
+            if [ -z "$U" ]; then continue; fi
+            
+            # 1. Cek Tanggal Home Folder (Estimasi Dibuat)
+            CREATED=$(stat -c %y /home/$U 2>/dev/null | cut -d'.' -f1)
+            if [ -z "$CREATED" ]; then CREATED="System/No-Home"; fi
+            
+            # 2. Cek Last Login
+            LOGIN_RAW=$(lastlog -u $U | tail -n 1)
+            if [[ "$LOGIN_RAW" == *"Never logged in"* ]]; then
+                LAST_LOGIN="Belum_Pernah"
+            else
+                # Ambil format tanggal simpel
+                LAST_LOGIN=$(echo "$LOGIN_RAW" | awk '{print $4,$5,$6,$7,$8}')
+            fi
+
+            # 3. Cek Status Akun (Enabled/Disabled/Locked) via passwd -S
+            # Format output: root P (Usable/Enabled) atau L (Locked/Disabled)
+            STATUS_RAW=$(passwd -S $U | awk '{print $2}')
+            if [ "$STATUS_RAW" == "P" ]; then
+                STATUS="Enabled"
+            elif [ "$STATUS_RAW" == "L" ]; then
+                STATUS="Disabled/Locked"
+            else
+                STATUS="Unknown"
+            fi
+            
+            # Output CSV sesuai Header
+            echo "$U,{{ target_group }},$STATUS,$CREATED,$LAST_LOGIN"
+        done
+      register: hasil_audit
+      args:
+        executable: /bin/bash
+
+    - name: Append Data Linux ke CSV
+      lineinfile:
+        path: "{{ playbook_dir }}/laporan_user_admin.csv"
+        line: "{{ ansible_hostname }},{{ ansible_default_ipv4.address }},{{ item }}"
+        create: no
+      with_items: "{{ hasil_audit.stdout_lines }}"
+      delegate_to: localhost
+      become: no
+      throttle: 1
+
+# ==========================================
+# PLAY 3: Mining Data User WINDOWS (FIXED V2)
+# ==========================================
+- name: 2b. Mining Data Admin Windows
+  hosts: uat_windows
+  gather_facts: yes
+  tasks:
+    - name: Ambil Detail User Windows via PowerShell
+      ansible.windows.win_shell: |
+        $members = Get-LocalGroupMember -Group "Administrators"
+        foreach ($m in $members) {
+            $name = $m.Name
+            
+            # Default Values
+            $status = "Domain/External"
+            $last_login = "Cek_AD_Controller" 
+            $created = "EventLog_Only"
+
+            # Cek apakah ini User Lokal komputer ini?
+            if ($m.PrincipalSource -eq "Local" -and $m.ObjectClass -eq "User") {
+                try {
+                    # FIX DISINI: Pakai [char]92 (kode ASCII Backslash) biar YAML gak error
+                    $shortName = $name.Split([char]92)[-1]
+                    
+                    # Query detail mendalam
+                    $usr = Get-LocalUser -Name $shortName -ErrorAction Stop
+                    
+                    # 1. Cek Status
+                    if ($usr.Enabled) { $status = "Enabled" } else { $status = "Disabled" }
+                    
+                    # 2. Cek Last Login
+                    if ($usr.LastLogon) { 
+                        $last_login = Get-Date($usr.LastLogon) -Format "yyyy-MM-dd HH:mm:ss" 
+                    } else { 
+                        $last_login = "Belum_Pernah" 
+                    }
+                } catch {
+                    $status = "Error_Get_Detail"
+                }
+            }
+            
+            # Output CSV
+            Write-Output "$name,Administrators,$status,$created,$last_login"
+        }
+      register: win_admin_list
+
+    - name: Append Data Windows ke CSV
+      lineinfile:
+        path: "{{ playbook_dir }}/laporan_user_admin.csv"
+        line: "{{ inventory_hostname }},{{ ansible_ip_addresses[0] }},{{ item }}"
+        create: no
+      with_items: "{{ win_admin_list.stdout_lines }}"
+      delegate_to: localhost
+      throttle: 1
+
+# ==========================================
+# PLAY 4: Sortir Data (Finishing)
+# ==========================================
+- name: 3. Rapikan & Sortir Hasil CSV
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Sortir File CSV
+      shell: |
+        cd "{{ playbook_dir }}"
+        head -n 1 laporan_user_admin.csv > laporan_temp.csv
+        tail -n +2 laporan_user_admin.csv | sort -t, -k1,1 -k3,3 >> laporan_temp.csv
+        mv laporan_temp.csv laporan_user_admin.csv

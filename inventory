@@ -1,0 +1,51 @@
+[uat_centos]
+UAT-MW01        ansible_host=172.16.201.131
+UAT-MW02        ansible_host=172.16.201.132
+UAT-EX01        ansible_host=172.16.201.8
+UAT-IN01        ansible_host=192.168.12.17
+UAT-DMZ-WS02    ansible_host=172.16.201.3
+
+[uat_centos:vars]
+ansible_python_interpreter=/opt/rh/rh-python38/root/usr/bin/python3
+
+[uat_ubuntu]
+UAT-IN02    ansible_host=172.16.162.11
+UAT-DB04    ansible_host=172.16.162.12
+
+[uat_ubuntu:vars]
+ansible_python_interpreter=/usr/bin/python3
+
+[uat_rhel]
+UAT-PX01    ansible_host=172.16.201.10
+
+[uat_rhel:vars]
+ansible_python_interpreter=/usr/bin/python3
+
+
+[uat_windows]
+UAT-WS02    ansible_host=192.168.12.12
+UAT-WS06    ansible_host=192.168.12.16
+UAT-DB02    ansible_host=172.16.162.9
+UAT-DB01    ansible_host=192.168.12.10
+
+
+[uat_windows:vars]
+ansible_user=.\endiaz
+# Kalau mau pakai user domain (opsional):
+# ansible_user=endiaz@ELIFE.CO.ID
+
+ansible_connection=winrm
+ansible_port=5985
+ansible_winrm_transport=ntlm
+ansible_winrm_server_cert_validation=ignore
+
+
+
+[server_uat:children]
+uat_centos
+uat_rhel
+uat_ubuntu
+
+
+[server_uat:vars]
+ansible_user=endiaz

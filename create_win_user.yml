@@ -1,0 +1,36 @@
+---
+- name: Setup User Admin Windows
+  hosts: uat_windows
+  vars:
+    user_baru: "budi_ops"
+    pass_baru: "P@ssw0rdRahasia2024!" # Sebaiknya taruh di Vault
+
+  tasks:
+    # 1. Buat User & Masukkan ke Grup
+    - name: Buat User {{ user_baru }} dan jadikan Admin
+      ansible.windows.win_user:
+        name: "{{ user_baru }}"
+        password: "{{ pass_baru }}"
+        state: present
+        fullname: "Budi Ops Manager"
+        description: "Dibuat via Ansible"
+        password_never_expires: yes
+        groups:
+          - Administrators        # Supaya jadi Admin
+          - Remote Desktop Users  # Supaya eksplisit boleh RDP
+        groups_action: add        # "add" = tambah grup, "replace" = hapus grup lain
+
+    # 2. Pastikan Service RDP Nyala (Jaga-jaga kalau mati)
+    - name: Enable Remote Desktop (Registry)
+      ansible.windows.win_regedit:
+        path: 'HKLM:\System\CurrentControlSet\Control\Terminal Server'
+        name: fDenyTSConnections
+        data: 0
+        type: dword
+
+    # 3. Buka Firewall Port 3389 (RDP)
+    - name: Allow RDP di Firewall
+      community.windows.win_firewall_rule:
+        name: "Remote Desktop"
+        group: "Remote Desktop"
+        enabled: yes

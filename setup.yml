@@ -1,0 +1,32 @@
+---
+- name: Setup Server Dasar
+  hosts: server_latihan
+  become: yes
+
+  tasks:
+    - name: Tes koneksi
+      ping:
+
+    # --- BLOCK UBUNTU (Tetap Rapi pakai Module) ---
+    - name: Update & Install htop (Ubuntu)
+      apt:
+        name: htop
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    # --- BLOCK CENTOS (Pakai Shell Command Manual) ---
+    # Kita pakai 'shell' karena modul 'yum' bentrok versi Python
+
+    - name: Install EPEL Release (CentOS via Shell)
+      shell: yum install epel-release -y
+      when: ansible_os_family == "RedHat"
+      # Supaya Ansible tidak lapor 'changed' kalau sudah terinstall (opsional, biar rapi)
+      register: epel_install
+      changed_when: "'Nothing to do' not in epel_install.stdout"
+
+    - name: Install Htop (CentOS via Shell)
+      shell: yum install htop -y
+      when: ansible_os_family == "RedHat"
+      register: htop_install
+      changed_when: "'Nothing to do' not in htop_install.stdout"

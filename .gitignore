@@ -1,0 +1,13 @@
+# Abaikan file kunci master (BAHAYA KALAU BOCOR)
+.vault_pass
+
+# Abaikan file temporary Ansible
+*.retry
+
+# Abaikan file laporan (Data sensitif)
+*.csv
+
+# Abaikan folder config IDE (opsional)
+.vscode/
+
+.idea/
