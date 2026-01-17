@@ -1,0 +1,44 @@
+- name: Diagnosa Final Windows
+  hosts: ELI-AP01, ELI-WS03
+  gather_facts: no
+  tasks:
+    - name: 1. Tes Koneksi WinRM
+      win_ping:
+      register: ping_res
+
+    - name: 2. Cek AD pake Jalur Paksa (Explicit ADSI)
+      win_shell: |
+        $ErrorActionPreference = 'SilentlyContinue'
+        
+        # Kredensial Domain lu buat nembus Double Hop
+        $userDomain = "elife\endiaz"
+        $passDomain = "HippaHippi2212*"
+        
+        Write-Host "Whoami: $(whoami)"
+        
+        # Cara Paksa 1: Pake DirectoryEntry (Paling ampuh buat nembus sesi remote)
+        try {
+            $path = "LDAP://DC=elife,DC=com"
+            $entry = New-Object System.DirectoryServices.DirectoryEntry($path, $userDomain, $passDomain)
+            $searcher = New-Object System.DirectoryServices.DirectorySearcher($entry)
+            $searcher.Filter = "(sAMAccountName=bona)"
+            $res = $searcher.FindOne()
+            
+            if ($res) {
+                Write-Host "SUKSES: Bona ketemu di AD via LDAP Explicit!"
+                Write-Host "Created: $($res.Properties.whencreated[0])"
+            } else {
+                Write-Host "GAGAL: Bona gak ketemu di LDAP."
+            }
+        } catch {
+            Write-Host "ERROR LDAP: $($_.Exception.Message)"
+        }
+      register: ad_test
+
+    - name: Tampilkan Hasil Diagnosa
+      debug:
+        msg:
+          - "Host: {{ inventory_hostname }}"
+          - "User WinRM: {{ ansible_user }}"
+          - "Ping: {{ ping_res.ping | default('FAILED') }}"
+          - "AD Result: {{ ad_test.stdout_lines }}"

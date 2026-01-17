@@ -95,3 +95,78 @@ net user endiaz 2212ChillaBocil /add /y
 
 # 2. Masukkan ke grup Admin
 net localgroup administrators endiaz /add
+
+----
+
+PS C:\Windows\system32> $UserName = "endiaz"
+PS C:\Windows\system32> try {
+>>     # Cari user di Active Directory menggunakan ADSI Searcher
+>>     $Searcher = [ADSISearcher]"(sAMAccountName=$UserName)"
+>>     $User = $Searcher.FindOne()
+>>
+>>     if ($User) {
+>>         $Props = $User.Properties
+>>
+>>         # 1. Estimasi Dibuat (WhenCreated)
+>>         $Created = $Props.whencreated[0]
+>>
+>>         # 2. Terakhir Login (LastLogon - dikonversi dari filetime)
+>>         $LastLogonRaw = $Props.lastlogon[0]
+>>         $LastLogon = if ($LastLogonRaw) { [DateTime]::FromFileTime($LastLogonRaw) } else { "Belum Pernah" }
+>>
+>>         # 3. Password Terakhir Diubah (PasswordLastSet)
+>>         $PwdLastSetRaw = $Props.pwdlastset[0]
+>>         $PwdLastSet = if ($PwdLastSetRaw) { [DateTime]::FromFileTime($PwdLastSetRaw) } else { "Unknown" }
+>>
+>>         Write-Host "Name           : $UserName"
+>>         Write-Host "Created        : $Created"
+>>         Write-Host "Last Logon     : $LastLogon"
+>>         Write-Host "Pwd Last Set   : $PwdLastSet"
+>>     } else {
+>>         Write-Host "User $UserName tidak ditemukan di Domain."
+>>     }
+>> } catch {
+>>     Write-Host "Gagal menarik data dari AD: $($_.Exception.Message)"
+>> }
+Name           : endiaz
+Created        : 08/23/2019 11:23:12
+Last Logon     : 01/17/2026 21:39:14
+Pwd Last Set   : 01/14/2026 10:01:59
+PS C:\Windows\system32>
+
+$UserName = "bona"
+try {
+    # Cari user di Active Directory menggunakan ADSI Searcher
+    $Searcher = [ADSISearcher]"(sAMAccountName=$UserName)"
+    $User = $Searcher.FindOne()
+
+    if ($User) {
+        $Props = $User.Properties
+
+        # 1. Estimasi Dibuat (WhenCreated)
+        $Created = $Props.whencreated[0]
+
+        # 2. Terakhir Login (LastLogon - dikonversi dari filetime)
+        $LastLogonRaw = $Props.lastlogon[0]
+        $LastLogon = if ($LastLogonRaw) { [DateTime]::FromFileTime($LastLogonRaw) } else { "Belum Pernah" }
+
+        # 3. Password Terakhir Diubah (PasswordLastSet)
+        $PwdLastSetRaw = $Props.pwdlastset[0]
+        $PwdLastSet = if ($PwdLastSetRaw) { [DateTime]::FromFileTime($PwdLastSetRaw) } else { "Unknown" }
+
+        Write-Host "Name           : $UserName"
+        Write-Host "Created        : $Created"
+        Write-Host "Last Logon     : $LastLogon"
+        Write-Host "Pwd Last Set   : $PwdLastSet"
+    } else {
+        Write-Host "User $UserName tidak ditemukan di Domain."
+    }
+} catch {
+    Write-Host "Gagal menarik data dari AD: $($_.Exception.Message)"
+}
+
+
+
+ansible-playbook audit_csv.yml --vault-password-file ~/.vault_pass
+ansible-playbook audit_csv.yml --tags "windows" --vault-password-file ~/.vault_pass
+

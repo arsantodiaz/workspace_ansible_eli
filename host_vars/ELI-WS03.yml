@@ -1,5 +1,5 @@
 ---
 # User Domain pakai backslash satu saja cukup di YAML
-ansible_user: .\adminbas
-ansible_password: 4dm!nBasEli2502
+ansible_user: .\endiaz
+ansible_password: '2212ChillaBocil'
 

@@ -105,7 +105,6 @@ ELI-AP02            ansible_host=192.168.10.223
 ELI-FS01            ansible_host=192.168.10.35
 ELI-DB21            ansible_host=192.168.10.101
 PRO-IN06            ansible_host=192.168.10.100
-PRO-IN06            ansible_host=192.168.10.100
 ELI-WS03            ansible_host=192.168.10.33
 #ELI-DB11            ansible_host=192.168.10.52
 #ELI-DC01
@@ -133,7 +132,6 @@ ELI-WS03        ansible_host=192.168.10.33
 
 [target_audit:vars]
 ansible_user=.\endiaz
-ansible_password=2212ChillaBocil
 ansible_connection=winrm
 ansible_port=5985
 ansible_winrm_transport=ntlm

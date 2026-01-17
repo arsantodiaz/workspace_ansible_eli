@@ -1,5 +1,5 @@
 ---
 # User Domain pakai backslash satu saja cukup di YAML
 ansible_user: elife\sys-it-dc
-ansible_password: 2212ChillaBocil
+ansible_password: '2212ChillaBocil'
 
