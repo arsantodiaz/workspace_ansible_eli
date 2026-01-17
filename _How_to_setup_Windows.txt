@@ -18,6 +18,9 @@ nano host_vars/UAT-WS06.yml
 Add-LocalGroupMember -Group "Remote Management Users" -Member "elife\sys-it-dc"
 Add-LocalGroupMember -Group "Administrators" -Member "elife\sys-it-dc"
 
+Add-LocalGroupMember -Group "Remote Management Users" -Member "adminbas"
+Add-LocalGroupMember -Group "Administrators" -Member "adminbas"
+
 
 sys-it-dc
 2212chillabocil
@@ -48,6 +51,21 @@ Atau pakai perintah cmd style:
 DOS
 
 winrm set winrm/config/winrs @{AllowRemoteShellAccess="true"}
+
+
+
+# 1. Masuk ke lokasi Registry Policy WinRM
+$path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service\WinRS"
+
+# 2. Cek kalau path-nya belum ada, kita buat dulu
+if (!(Test-Path $path)) { New-Item -Path $path -Force }
+
+# 3. Paksa nilainya jadi 1 (True/Enabled)
+Set-ItemProperty -Path $path -Name "AllowRemoteShellAccess" -Value 1 -Type DWord
+
+
+
+
 3. Cek Memory (Penyebab Error 500)
 Kadang error "Code 500" juga muncul karena jatah memori untuk remote user terlalu kecil. Sekalian naikkan biar aman:
 

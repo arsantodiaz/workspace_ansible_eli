@@ -5,6 +5,7 @@
 UAT-MW01        ansible_host=172.16.201.131
 UAT-MW02        ansible_host=172.16.201.132
 UAT-EX01        ansible_host=172.16.201.8
+UAT-EX02        ansible_host=172.16.201.9
 UAT-IN01        ansible_host=192.168.12.17
 UAT-DMZ-WS02    ansible_host=172.16.201.3
 
@@ -102,9 +103,14 @@ ELI-DC02            ansible_host=192.168.10.16
 ELI-AP01            ansible_host=192.168.10.40
 ELI-AP02            ansible_host=192.168.10.223
 ELI-FS01            ansible_host=192.168.10.35
-#ELI-DB11            ansible_host=192.168.10.52
 ELI-DB21            ansible_host=192.168.10.101
 PRO-IN06            ansible_host=192.168.10.100
+PRO-IN06            ansible_host=192.168.10.100
+ELI-WS03            ansible_host=192.168.10.33
+#ELI-DB11            ansible_host=192.168.10.52
+#ELI-DC01
+#ELI-MS03
+#PRO-EX05
 
 [pro_windows:vars]
 ansible_user=.\endiaz
