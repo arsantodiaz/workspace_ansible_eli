@@ -97,6 +97,9 @@ ansible_python_interpreter=/usr/bin/python3.9
 [pro_windows]
 ELI-DB10            ansible_host=192.168.10.51
 ELI-WS-NODE01       ansible_host=192.168.10.48
+ELI-DB12            ansible_host=192.168.10.53
+ELI-DC02            ansible_host=192.168.10.16
+ELI-AP01            ansible_host=192.168.10.40
 
 [pro_windows:vars]
 ansible_user=.\endiaz
