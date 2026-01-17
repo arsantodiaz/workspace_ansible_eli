@@ -79,11 +79,11 @@ ELI-LO01        ansible_host=172.16.162.6
 ansible_python_interpreter=/bin/python3
 
 [pro_ubuntu]
-PRO-IN02    ansible_host=192.168.10.72
-ELI-DB20    ansible_host=192.168.10.54
-ELI-DMSAPP  ansible_host=192.168.10.177
-ELI-DMSDB   ansible_host=192.168.10.178
-ELI-DMSFILESTORAGE   ansible_host=192.168.10.179
+PRO-IN02                ansible_host=192.168.10.72
+ELI-DB20                ansible_host=192.168.10.54
+ELI-DMSAPP              ansible_host=192.168.10.177
+ELI-DMSDB               ansible_host=192.168.10.178
+ELI-DMSFILESTORAGE      ansible_host=192.168.10.179
 
 [pro_ubuntu:vars]
 ansible_python_interpreter=/usr/bin/python3
@@ -126,4 +126,15 @@ pro_ubuntu
 pro_rhel
 pro_windows
 
+[target_audit]
+ELI-WS-NODE01   ansible_host=192.168.10.48
+ELI-DB10        ansible_host=192.168.10.51
+ELI-WS03        ansible_host=192.168.10.33
 
+[target_audit:vars]
+ansible_user=.\endiaz
+ansible_password=2212ChillaBocil
+ansible_connection=winrm
+ansible_port=5985
+ansible_winrm_transport=ntlm
+ansible_winrm_server_cert_validation=ignore

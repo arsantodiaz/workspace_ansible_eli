@@ -1,0 +1,286 @@
+=========================================================
+       AUDIT EXECUTION: REQUEST ITEMS 1 TO 23            
+=========================================================
+[SYSTEM] TIPE: MEMBER SERVER / WORKSTATION
+
+[ITEM 1] Report of Guest User Status
+
+
+Name        : Guest
+Enabled     : False
+Description : Built-in account for guest access to the computer/domain
+
+
+
+---------------------------------------------------------
+[ITEM 2] Security Options
+Idle Time Setting (Minutes): 15
+---------------------------------------------------------
+[ITEM 3] Password Policy
+(Local Policy)
+Force user logoff how long after time expires?:       Never
+Minimum password age (days):                          1
+Maximum password age (days):                          30
+Minimum password length:                              8
+Length of password history maintained:                5
+Lockout threshold:                                    5
+Lockout duration (minutes):                           10
+Lockout observation window (minutes):                 5
+Computer role:                                        SERVER
+The command completed successfully.
+
+---------------------------------------------------------
+[ITEM 4] User Property (Sample)
+
+
+AccountExpires         : 
+Description            : Built-in account for administering the computer/domain
+Enabled                : True
+FullName               : Admin Local Equity
+PasswordChangeableDate : 3/27/2021 8:58:18 AM
+PasswordExpires        : 
+UserMayChangePassword  : True
+PasswordRequired       : True
+PasswordLastSet        : 3/26/2021 8:58:18 AM
+LastLogon              : 6/13/2024 10:16:23 PM
+Name                   : Administrator
+SID                    : S-1-5-21-2476887186-3289567291-428235802-500
+PrincipalSource        : Local
+ObjectClass            : User
+
+
+
+---------------------------------------------------------
+[ITEM 5] Report of Group List Members (With Status)
+Checking Local Group: Administrators
+
+Name                                   Source Status       
+----                                   ------ ------       
+ELIFE\bona                    ActiveDirectory Error Reading
+ELIFE\Domain Admins           ActiveDirectory Unknown/Group
+ELIFE\gomgom                  ActiveDirectory Error Reading
+ELI-WS-NODE01\Administrator             Local ENABLED      
+ELI-WS-NODE01\andrean                   Local DISABLED     
+ELI-WS-NODE01\bona                      Local ENABLED      
+ELI-WS-NODE01\endiaz                    Local ENABLED      
+ELI-WS-NODE01\gomgom                    Local DISABLED     
+ELI-WS-NODE01\SuP3R4dMInIMGVm           Local DISABLED     
+ELI-WS-NODE01\thomas                    Local ENABLED      
+ELI-WS-NODE01\vm-restore                Local ENABLED      
+ELI-WS-NODE01\WDeployAdmin              Local DISABLED     
+
+
+
+Checking Local Group: Backup Operators
+  (Empty)
+
+Checking Local Group: Network Configuration Operators
+  (Empty)
+
+Checking Local Group: Remote Desktop Users
+
+Name                            Source Status       
+----                            ------ ------       
+ELIFE\johannes.ginting ActiveDirectory Error Reading
+
+
+
+Checking Local Group: Power Users
+  (Empty)
+
+Checking Local Group: Users
+
+Name                                      Source Status       
+----                                      ------ ------       
+ELIFE\Domain Users               ActiveDirectory Unknown/Group
+ELI-WS-NODE01\andrean                      Local DISABLED     
+ELI-WS-NODE01\backup                       Local ENABLED      
+ELI-WS-NODE01\endiaz                       Local ENABLED      
+ELI-WS-NODE01\gomgom                       Local DISABLED     
+ELI-WS-NODE01\thomas                       Local ENABLED      
+NT AUTHORITY\Authenticated Users         Unknown Unknown/Group
+NT AUTHORITY\INTERACTIVE                 Unknown Unknown/Group
+
+
+
+---------------------------------------------------------
+[ITEM 6] Registry Access Permissions (Winreg)
+
+IdentityReference          AccessControlType RegistryRights
+-----------------          ----------------- --------------
+NT AUTHORITY\LOCAL SERVICE             Allow    -2147483648
+NT AUTHORITY\LOCAL SERVICE             Allow        ReadKey
+BUILTIN\Administrators                 Allow      268435456
+BUILTIN\Administrators                 Allow    FullControl
+BUILTIN\Backup Operators               Allow        ReadKey
+
+
+---------------------------------------------------------
+[ITEM 7] AD Trust Relationships
+N/A (Not a Domain Controller)
+---------------------------------------------------------
+[ITEM 8] File System Update Access
+MANUAL CHECK REQUIRED: Right click target folder -> Properties -> Security.
+---------------------------------------------------------
+[ITEM 9] FTP Accounts and Permissions
+
+name                         state   physicalPath      
+----                         -----   ------------      
+uat-ws02.elife.co.id - Admin Started D:\inetpub\wwwroot
+uat-ws02.elife.co.id - User  Started D:\inetpub\ftproot
+uat-ftp.elife.co.id          Started D:\ftp            
+sit-ftp.elife.co.id          Started D:\ftp\sit        
+
+
+---------------------------------------------------------
+[ITEM 10] Domain Structure Service
+Service NTDS NOT FOUND (Normal for Member Server).
+Computer Name: ELI-WS-NODE01
+---------------------------------------------------------
+[ITEM 11] File System Report (Drives)
+
+DriveLetter FileSystemLabel FileSystem DriveType SizeRemaining         Size
+----------- --------------- ---------- --------- -------------         ----
+                            NTFS       Fixed          89460736    625995776
+D           Data            NTFS       Fixed       73916260352 322119397376
+E           LOG             NTFS       Fixed       18607394816 214745214976
+            System Reserved NTFS       Fixed          77012992    366997504
+C           ELI-WS-NODE01   NTFS       Fixed       22496559104  63428358144
+F                                      CD-ROM                0            0
+A                                      Removable             0            0
+
+
+---------------------------------------------------------
+[ITEM 12] Application Directory Access (Program Files)
+
+IdentityReference                                                            FileSystemRights AccessControlType
+-----------------                                                            ---------------- -----------------
+CREATOR OWNER                                                                       268435456             Allow
+NT AUTHORITY\SYSTEM                                                                 268435456             Allow
+NT AUTHORITY\SYSTEM                                                       Modify, Synchronize             Allow
+BUILTIN\Administrators                                                              268435456             Allow
+BUILTIN\Administrators                                                    Modify, Synchronize             Allow
+BUILTIN\Users                                                                     -1610612736             Allow
+BUILTIN\Users                                                     ReadAndExecute, Synchronize             Allow
+NT SERVICE\TrustedInstaller                                                         268435456             Allow
+NT SERVICE\TrustedInstaller                                                       FullControl             Allow
+APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES            ReadAndExecute, Synchronize             Allow
+APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES                            -1610612736             Allow
+APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES ReadAndExecute, Synchronize             Allow
+APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES                 -1610612736             Allow
+
+
+---------------------------------------------------------
+[ITEM 13] AD Trust (Re-Check)
+N/A
+---------------------------------------------------------
+[ITEM 14] Fine Grained Password Policies
+Local Policy:
+Force user logoff how long after time expires?:       Never
+Minimum password age (days):                          1
+Maximum password age (days):                          30
+Minimum password length:                              8
+Length of password history maintained:                5
+Lockout threshold:                                    5
+Lockout duration (minutes):                           10
+Lockout observation window (minutes):                 5
+Computer role:                                        SERVER
+The command completed successfully.
+
+---------------------------------------------------------
+[ITEM 15] List of Privileged Accounts
+Local Group: Administrators
+
+ELIFE\bona                    ActiveDirectory
+ELIFE\Domain Admins           ActiveDirectory
+ELIFE\gomgom                  ActiveDirectory
+ELI-WS-NODE01\Administrator             Local
+ELI-WS-NODE01\andrean                   Local
+ELI-WS-NODE01\bona                      Local
+ELI-WS-NODE01\endiaz                    Local
+ELI-WS-NODE01\gomgom                    Local
+ELI-WS-NODE01\SuP3R4dMInIMGVm           Local
+ELI-WS-NODE01\thomas                    Local
+ELI-WS-NODE01\vm-restore                Local
+ELI-WS-NODE01\WDeployAdmin              Local
+
+
+Local Group: Backup Operators
+Local Group: Power Users
+---------------------------------------------------------
+[ITEM 16] User Rights Assignment
+---------------------------------------------------------
+[ITEM 17] Default Accounts Status
+
+Administrator    True
+
+
+
+Guest   False
+
+
+---------------------------------------------------------
+[ITEM 18] Remote Desktop Access Users
+
+ELIFE\johannes.ginting
+
+
+---------------------------------------------------------
+[ITEM 19] Audit Log Configuration (Export)
+[SUCCESS] Saved to: C:\Users\endiaz.ELI-WS-NODE01\ELI-WS-NODE01_AuditPolicy.txt
+---------------------------------------------------------
+[ITEM 20] Security Events (Trust Changes)
+No Trust Change events in last 1000 logs.
+---------------------------------------------------------
+[ITEM 21] List of Hot Fixes
+
+HotFixID  Description     InstalledOn           
+--------  -----------     -----------           
+KB5071547 Security Update 12/10/2025 12:00:00 AM
+KB5068786 Security Update 11/12/2025 12:00:00 AM
+KB5066139 Update          10/14/2025 12:00:00 AM
+KB5007374 Update          11/18/2024 12:00:00 AM
+
+
+---------------------------------------------------------
+[ITEM 22] Detailed Privileged Access List (With Status)
+Checking: Administrators
+
+Name                                   Source Status         
+----                                   ------ ------         
+ELIFE\bona                    ActiveDirectory Error          
+ELIFE\Domain Admins           ActiveDirectory Unknown/Group  
+ELIFE\gomgom                  ActiveDirectory Error          
+ELI-WS-NODE01\Administrator             Local ENABLED (RISK) 
+ELI-WS-NODE01\andrean                   Local DISABLED (SAFE)
+ELI-WS-NODE01\bona                      Local ENABLED (RISK) 
+ELI-WS-NODE01\endiaz                    Local ENABLED (RISK) 
+ELI-WS-NODE01\gomgom                    Local DISABLED (SAFE)
+ELI-WS-NODE01\SuP3R4dMInIMGVm           Local DISABLED (SAFE)
+ELI-WS-NODE01\thomas                    Local ENABLED (RISK) 
+ELI-WS-NODE01\vm-restore                Local ENABLED (RISK) 
+ELI-WS-NODE01\WDeployAdmin              Local DISABLED (SAFE)
+
+
+
+Checking: Network Configuration Operators
+
+Checking: Remote Desktop Users
+
+Name                            Source Status
+----                            ------ ------
+ELIFE\johannes.ginting ActiveDirectory Error 
+
+
+
+Checking: Server Operators
+
+Checking: Backup Operators
+
+---------------------------------------------------------
+[ITEM 23] User Rights (Specific)
+---------------------------------------------------------
+
+=========================================================
+                FULL AUDIT COMPLETED                     
+=========================================================

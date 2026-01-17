@@ -1,0 +1,224 @@
+=========================================================
+       AUDIT EXECUTION: REQUEST ITEMS 1 TO 23            
+=========================================================
+[SYSTEM] TIPE: MEMBER SERVER / WORKSTATION
+
+[ITEM 1] Report of Guest User Status
+---------------------------------------------------------
+[ITEM 2] Security Options
+Idle Time Setting (Minutes): 15
+---------------------------------------------------------
+[ITEM 3] Password Policy
+(Local Policy)
+Force user logoff how long after time expires?:       Never
+Minimum password age (days):                          1
+Maximum password age (days):                          60
+Minimum password length:                              14
+Length of password history maintained:                24
+Lockout threshold:                                    5
+Lockout duration (minutes):                           15
+Lockout observation window (minutes):                 15
+Computer role:                                        SERVER
+The command completed successfully.
+
+---------------------------------------------------------
+[ITEM 4] User Property (Sample)
+---------------------------------------------------------
+[ITEM 5] Report of Group List Members (With Status)
+Checking Local Group: Administrators
+
+Name                Source Status 
+----                ------ ------ 
+ELI-WS03\adminbas    Local ENABLED
+ELI-WS03\bona        Local ENABLED
+ELI-WS03\endiaz      Local ENABLED
+ELI-WS03\it-admin    Local ENABLED
+ELI-WS03\thomas      Local ENABLED
+ELI-WS03\vm-restore  Local ENABLED
+
+
+
+Checking Local Group: Backup Operators
+  (Empty)
+
+Checking Local Group: Network Configuration Operators
+  (Empty)
+
+Checking Local Group: Remote Desktop Users
+
+Name            Source Status 
+----            ------ ------ 
+ELI-WS03\endiaz  Local ENABLED
+ELI-WS03\thomas  Local ENABLED
+
+
+
+Checking Local Group: Power Users
+  (Empty)
+
+Checking Local Group: Users
+
+Name                              Source Status       
+----                              ------ ------       
+ELI-WS03\adminbas                  Local ENABLED      
+ELI-WS03\bona                      Local ENABLED      
+ELI-WS03\endiaz                    Local ENABLED      
+ELI-WS03\thomas                    Local ENABLED      
+ELI-WS03\vm-restore                Local ENABLED      
+NT AUTHORITY\Authenticated Users Unknown Unknown/Group
+NT AUTHORITY\INTERACTIVE         Unknown Unknown/Group
+
+
+
+---------------------------------------------------------
+[ITEM 6] Registry Access Permissions (Winreg)
+
+IdentityReference          AccessControlType RegistryRights
+-----------------          ----------------- --------------
+NT AUTHORITY\LOCAL SERVICE             Allow    -2147483648
+NT AUTHORITY\LOCAL SERVICE             Allow        ReadKey
+BUILTIN\Administrators                 Allow      268435456
+BUILTIN\Administrators                 Allow    FullControl
+BUILTIN\Backup Operators               Allow        ReadKey
+
+
+---------------------------------------------------------
+[ITEM 7] AD Trust Relationships
+N/A (Not a Domain Controller)
+---------------------------------------------------------
+[ITEM 8] File System Update Access
+MANUAL CHECK REQUIRED: Right click target folder -> Properties -> Security.
+---------------------------------------------------------
+[ITEM 9] FTP Accounts and Permissions
+---------------------------------------------------------
+[ITEM 10] Domain Structure Service
+Service NTDS NOT FOUND (Normal for Member Server).
+Computer Name: ELI-WS03
+---------------------------------------------------------
+[ITEM 11] File System Report (Drives)
+
+DriveLetter FileSystemLabel FileSystem DriveType SizeRemaining         Size
+----------- --------------- ---------- --------- -------------         ----
+                            NTFS       Fixed          89452544    549449728
+C           ELI-WS03        NTFS       Fixed       60755525632 106699943936
+D           BAS             NTFS       Fixed       72318394368 429477851136
+E           BACKUP          NTFS       Fixed       41317294080 107355303936
+                            FAT32      Fixed          70158336    100663296
+Z                                      CD-ROM                0            0
+
+
+---------------------------------------------------------
+[ITEM 12] Application Directory Access (Program Files)
+
+IdentityReference                                                            FileSystemRights AccessControlType
+-----------------                                                            ---------------- -----------------
+CREATOR OWNER                                                                       268435456             Allow
+NT AUTHORITY\SYSTEM                                                                 268435456             Allow
+NT AUTHORITY\SYSTEM                                                       Modify, Synchronize             Allow
+BUILTIN\Administrators                                                              268435456             Allow
+BUILTIN\Administrators                                                    Modify, Synchronize             Allow
+BUILTIN\Users                                                                     -1610612736             Allow
+BUILTIN\Users                                                     ReadAndExecute, Synchronize             Allow
+NT SERVICE\TrustedInstaller                                                         268435456             Allow
+NT SERVICE\TrustedInstaller                                                       FullControl             Allow
+APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES            ReadAndExecute, Synchronize             Allow
+APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES                            -1610612736             Allow
+APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES ReadAndExecute, Synchronize             Allow
+APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES                 -1610612736             Allow
+
+
+---------------------------------------------------------
+[ITEM 13] AD Trust (Re-Check)
+N/A
+---------------------------------------------------------
+[ITEM 14] Fine Grained Password Policies
+Local Policy:
+Force user logoff how long after time expires?:       Never
+Minimum password age (days):                          1
+Maximum password age (days):                          60
+Minimum password length:                              14
+Length of password history maintained:                24
+Lockout threshold:                                    5
+Lockout duration (minutes):                           15
+Lockout observation window (minutes):                 15
+Computer role:                                        SERVER
+The command completed successfully.
+
+---------------------------------------------------------
+[ITEM 15] List of Privileged Accounts
+Local Group: Administrators
+
+ELI-WS03\adminbas             Local
+ELI-WS03\bona                 Local
+ELI-WS03\endiaz               Local
+ELI-WS03\it-admin             Local
+ELI-WS03\thomas               Local
+ELI-WS03\vm-restore           Local
+
+
+Local Group: Backup Operators
+Local Group: Power Users
+---------------------------------------------------------
+[ITEM 16] User Rights Assignment
+---------------------------------------------------------
+[ITEM 17] Default Accounts Status
+---------------------------------------------------------
+[ITEM 18] Remote Desktop Access Users
+
+ELI-WS03\endiaz
+ELI-WS03\thomas
+
+
+---------------------------------------------------------
+[ITEM 19] Audit Log Configuration (Export)
+[SUCCESS] Saved to: C:\Users\adminbas\ELI-WS03_AuditPolicy.txt
+---------------------------------------------------------
+[ITEM 20] Security Events (Trust Changes)
+No Trust Change events in last 1000 logs.
+---------------------------------------------------------
+[ITEM 21] List of Hot Fixes
+
+HotFixID  Description     InstalledOn         
+--------  -----------     -----------         
+KB5050117 Security Update 2/6/2025 12:00:00 AM
+KB5049983 Security Update 2/6/2025 12:00:00 AM
+KB5049617 Update          2/6/2025 12:00:00 AM
+
+
+---------------------------------------------------------
+[ITEM 22] Detailed Privileged Access List (With Status)
+Checking: Administrators
+
+Name                Source Status        
+----                ------ ------        
+ELI-WS03\adminbas    Local ENABLED (RISK)
+ELI-WS03\bona        Local ENABLED (RISK)
+ELI-WS03\endiaz      Local ENABLED (RISK)
+ELI-WS03\it-admin    Local ENABLED (RISK)
+ELI-WS03\thomas      Local ENABLED (RISK)
+ELI-WS03\vm-restore  Local ENABLED (RISK)
+
+
+
+Checking: Network Configuration Operators
+
+Checking: Remote Desktop Users
+
+Name            Source Status        
+----            ------ ------        
+ELI-WS03\endiaz  Local ENABLED (RISK)
+ELI-WS03\thomas  Local ENABLED (RISK)
+
+
+
+Checking: Server Operators
+
+Checking: Backup Operators
+
+---------------------------------------------------------
+[ITEM 23] User Rights (Specific)
+---------------------------------------------------------
+
+=========================================================
+                FULL AUDIT COMPLETED                     
+=========================================================

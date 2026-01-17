@@ -1,0 +1,49 @@
+---
+
+# ansible-playbook -i inventory run_audit_windows.yml
+
+- name: Jalankan Full Audit Windows
+  hosts: target_audit
+  gather_facts: no  # Biar cepat, gak usah gathering facts standar
+
+  vars:
+    local_report_dir: "./hasil_audit"
+    remote_script_path: "C:\\Windows\\Temp\\FullAudit_EY_v2.ps1"
+
+  tasks:
+    # 1. Buat folder penampung laporan di Laptop (Localhost)
+    - name: Siapkan folder laporan di Laptop
+      file:
+        path: "{{ local_report_dir }}"
+        state: directory
+      delegate_to: localhost
+      run_once: true
+
+    # 2. Upload Script ke Server Windows
+    - name: Copy Script Audit ke Windows Server
+      ansible.windows.win_copy:
+        src: "FullAudit_EY_v2.ps1"
+        dest: "{{ remote_script_path }}"
+        force: yes
+
+    # 3. Eksekusi Script
+    - name: Eksekusi Script PowerShell Audit
+      ansible.windows.win_shell: |
+        & "{{ remote_script_path }}"
+      register: audit_output
+      # Script ini lama, kita kasih timeout agak panjang (misal 5 menit)
+      vars:
+        ansible_command_timeout: 300
+
+    # 4. Simpan Hasilnya ke Laptop
+    - name: Simpan Output ke File Text di Laptop
+      copy:
+        content: "{{ audit_output.stdout }}"
+        dest: "{{ local_report_dir }}/{{ inventory_hostname }}_AuditResult.txt"
+      delegate_to: localhost
+
+    # 5. Bersih-bersih (Hapus script di server setelah selesai)
+    - name: Hapus Script dari Server Windows
+      ansible.windows.win_file:
+        path: "{{ remote_script_path }}"
+        state: absent

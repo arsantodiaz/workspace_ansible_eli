@@ -1,0 +1,266 @@
+=========================================================
+       AUDIT EXECUTION: REQUEST ITEMS 1 TO 23            
+=========================================================
+[SYSTEM] TIPE: MEMBER SERVER / WORKSTATION
+
+[ITEM 1] Report of Guest User Status
+
+
+Name        : Guest
+Enabled     : False
+Description : Built-in account for guest access to the computer/domain
+
+
+
+---------------------------------------------------------
+[ITEM 2] Security Options
+Idle Time Setting (Minutes): 15
+---------------------------------------------------------
+[ITEM 3] Password Policy
+(Local Policy)
+Force user logoff how long after time expires?:       Never
+Minimum password age (days):                          1
+Maximum password age (days):                          30
+Minimum password length:                              8
+Length of password history maintained:                5
+Lockout threshold:                                    5
+Lockout duration (minutes):                           10
+Lockout observation window (minutes):                 5
+Computer role:                                        SERVER
+The command completed successfully.
+
+---------------------------------------------------------
+[ITEM 4] User Property (Sample)
+
+
+AccountExpires         : 
+Description            : Local Administration
+Enabled                : True
+FullName               : Admin Local Equity
+PasswordChangeableDate : 3/9/2018 10:54:37 AM
+PasswordExpires        : 
+UserMayChangePassword  : True
+PasswordRequired       : True
+PasswordLastSet        : 3/8/2018 10:54:37 AM
+LastLogon              : 6/16/2024 5:56:40 PM
+Name                   : Administrator
+SID                    : S-1-5-21-57944783-1923684844-560020282-500
+PrincipalSource        : Local
+ObjectClass            : User
+
+
+
+---------------------------------------------------------
+[ITEM 5] Report of Group List Members (With Status)
+Checking Local Group: Administrators
+
+Name                            Source Status       
+----                            ------ ------       
+ELI-DB10\Administrator           Local ENABLED      
+ELI-DB10\andrean                 Local DISABLED     
+ELI-DB10\backup-db               Local ENABLED      
+ELI-DB10\endiaz                  Local ENABLED      
+ELI-DB10\thomas                  Local ENABLED      
+ELI-DB10\vm-restore              Local ENABLED      
+ELIFE\Domain Admins    ActiveDirectory Unknown/Group
+
+
+
+Checking Local Group: Backup Operators
+  (Empty)
+
+Checking Local Group: Network Configuration Operators
+  (Empty)
+
+Checking Local Group: Remote Desktop Users
+
+Name                  Source Status                 
+----                  ------ ------                 
+ELIFE\gomgom ActiveDirectory Domain User (Need RSAT)
+
+
+
+Checking Local Group: Power Users
+  (Empty)
+
+Checking Local Group: Users
+
+Name                                      Source Status       
+----                                      ------ ------       
+ELI-DB10\andrean                           Local DISABLED     
+ELI-DB10\backup-db                         Local ENABLED      
+ELI-DB10\endiaz                            Local ENABLED      
+ELI-DB10\repl_distribution                 Local ENABLED      
+ELI-DB10\repl_logreader                    Local ENABLED      
+ELI-DB10\repl_merge                        Local ENABLED      
+ELI-DB10\repl_snapshot                     Local ENABLED      
+ELI-DB10\thomas                            Local ENABLED      
+ELIFE\Domain Users               ActiveDirectory Unknown/Group
+NT AUTHORITY\Authenticated Users         Unknown Unknown/Group
+NT AUTHORITY\INTERACTIVE                 Unknown Unknown/Group
+
+
+
+---------------------------------------------------------
+[ITEM 6] Registry Access Permissions (Winreg)
+
+IdentityReference          AccessControlType RegistryRights
+-----------------          ----------------- --------------
+NT AUTHORITY\LOCAL SERVICE             Allow    -2147483648
+NT AUTHORITY\LOCAL SERVICE             Allow        ReadKey
+BUILTIN\Administrators                 Allow      268435456
+BUILTIN\Administrators                 Allow    FullControl
+BUILTIN\Backup Operators               Allow        ReadKey
+
+
+---------------------------------------------------------
+[ITEM 7] AD Trust Relationships
+N/A (Not a Domain Controller)
+---------------------------------------------------------
+[ITEM 8] File System Update Access
+MANUAL CHECK REQUIRED: Right click target folder -> Properties -> Security.
+---------------------------------------------------------
+[ITEM 9] FTP Accounts and Permissions
+IIS Module not installed / No FTP.
+---------------------------------------------------------
+[ITEM 10] Domain Structure Service
+Service NTDS NOT FOUND (Normal for Member Server).
+Computer Name: ELI-DB10
+---------------------------------------------------------
+[ITEM 11] File System Report (Drives)
+
+DriveLetter FileSystemLabel FileSystem DriveType SizeRemaining          Size
+----------- --------------- ---------- --------- -------------          ----
+          D DB-Data         NTFS       Fixed      756152729600 2199020093440
+          H DB-Log 2        NTFS       Fixed      281066627072  536867762176
+          E DB-Log          NTFS       Fixed      230758236160  549752651776
+          F backup          NTFS       Fixed      105955680256  536867762176
+                            NTFS       Fixed          87556096     560984064
+            System Reserved NTFS       Fixed          74756096     366997504
+          C ELI-DB10        NTFS       Fixed       22435557376  138652856320
+          G                            CD-ROM                0             0
+
+
+---------------------------------------------------------
+[ITEM 12] Application Directory Access (Program Files)
+
+IdentityReference                                                            FileSystemRights AccessControlType
+-----------------                                                            ---------------- -----------------
+CREATOR OWNER                                                                       268435456             Allow
+NT AUTHORITY\SYSTEM                                                                 268435456             Allow
+NT AUTHORITY\SYSTEM                                                       Modify, Synchronize             Allow
+BUILTIN\Administrators                                                              268435456             Allow
+BUILTIN\Administrators                                                    Modify, Synchronize             Allow
+BUILTIN\Users                                                                     -1610612736             Allow
+BUILTIN\Users                                                     ReadAndExecute, Synchronize             Allow
+NT SERVICE\TrustedInstaller                                                         268435456             Allow
+NT SERVICE\TrustedInstaller                                                       FullControl             Allow
+APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES            ReadAndExecute, Synchronize             Allow
+APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES                            -1610612736             Allow
+APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES ReadAndExecute, Synchronize             Allow
+APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES                 -1610612736             Allow
+
+
+---------------------------------------------------------
+[ITEM 13] AD Trust (Re-Check)
+N/A
+---------------------------------------------------------
+[ITEM 14] Fine Grained Password Policies
+Local Policy:
+Force user logoff how long after time expires?:       Never
+Minimum password age (days):                          1
+Maximum password age (days):                          30
+Minimum password length:                              8
+Length of password history maintained:                5
+Lockout threshold:                                    5
+Lockout duration (minutes):                           10
+Lockout observation window (minutes):                 5
+Computer role:                                        SERVER
+The command completed successfully.
+
+---------------------------------------------------------
+[ITEM 15] List of Privileged Accounts
+Local Group: Administrators
+
+ELI-DB10\Administrator           Local
+ELI-DB10\andrean                 Local
+ELI-DB10\backup-db               Local
+ELI-DB10\endiaz                  Local
+ELI-DB10\thomas                  Local
+ELI-DB10\vm-restore              Local
+ELIFE\Domain Admins    ActiveDirectory
+
+
+Local Group: Backup Operators
+Local Group: Power Users
+---------------------------------------------------------
+[ITEM 16] User Rights Assignment
+---------------------------------------------------------
+[ITEM 17] Default Accounts Status
+
+Administrator    True
+
+
+
+Guest   False
+
+
+---------------------------------------------------------
+[ITEM 18] Remote Desktop Access Users
+
+ELIFE\gomgom
+
+
+---------------------------------------------------------
+[ITEM 19] Audit Log Configuration (Export)
+[SUCCESS] Saved to: C:\Users\endiaz.ELI-DB10\ELI-DB10_AuditPolicy.txt
+---------------------------------------------------------
+[ITEM 20] Security Events (Trust Changes)
+No Trust Change events in last 1000 logs.
+---------------------------------------------------------
+[ITEM 21] List of Hot Fixes
+
+HotFixID  Description     InstalledOn          
+--------  -----------     -----------          
+KB5060526 Security Update 6/14/2025 12:00:00 AM
+KB5058531 Security Update 6/13/2025 12:00:00 AM
+KB5055169 Update          4/11/2025 12:00:00 AM
+
+
+---------------------------------------------------------
+[ITEM 22] Detailed Privileged Access List (With Status)
+Checking: Administrators
+
+Name                            Source Status         
+----                            ------ ------         
+ELI-DB10\Administrator           Local ENABLED (RISK) 
+ELI-DB10\andrean                 Local DISABLED (SAFE)
+ELI-DB10\backup-db               Local ENABLED (RISK) 
+ELI-DB10\endiaz                  Local ENABLED (RISK) 
+ELI-DB10\thomas                  Local ENABLED (RISK) 
+ELI-DB10\vm-restore              Local ENABLED (RISK) 
+ELIFE\Domain Admins    ActiveDirectory Unknown/Group  
+
+
+
+Checking: Network Configuration Operators
+
+Checking: Remote Desktop Users
+
+Name                  Source Status               
+----                  ------ ------               
+ELIFE\gomgom ActiveDirectory Domain User (No RSAT)
+
+
+
+Checking: Server Operators
+
+Checking: Backup Operators
+
+---------------------------------------------------------
+[ITEM 23] User Rights (Specific)
+---------------------------------------------------------
+
+=========================================================
+                FULL AUDIT COMPLETED                     
+=========================================================
