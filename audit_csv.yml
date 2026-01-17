@@ -1,5 +1,7 @@
 ---
-# Howto: ansible-playbook audit_csv.yml --vault-password-file ~/.vault_pass
+# Howto:
+#   - ansible-playbook audit_csv.yml --vault-password-file ~/.vault_pass
+#   - ansible-playbook audit_csv.yml --vault-password-file ~/.vault_pass --tags "setup,windows"
 
 # ==========================================
 # PLAY 1: Persiapan File (Header Baru)
@@ -8,6 +10,7 @@
   hosts: localhost
   connection: local
   gather_facts: no
+  tags: setup
   tasks:
     - name: Buat Header CSV (Ditambah Kolom Status)
       copy:
@@ -24,7 +27,7 @@
   become: yes
   vars:
     target_group: "{{ 'wheel' if ansible_os_family == 'RedHat' else 'sudo' }}"
-
+  tags: linux
   tasks:
     - name: Gathering Facts Linux
       setup:
@@ -80,8 +83,9 @@
 # PLAY 3: Mining Data User WINDOWS (FIXED V2)
 # ==========================================
 - name: 2b. Mining Data Admin Windows
-  hosts: uat_windows
+  hosts: uat_windows:pro_windows
   gather_facts: yes
+  tags: windows
   tasks:
     - name: Ambil Detail User Windows via PowerShell
       ansible.windows.win_shell: |
