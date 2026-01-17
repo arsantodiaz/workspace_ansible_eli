@@ -100,6 +100,11 @@ ELI-WS-NODE01       ansible_host=192.168.10.48
 ELI-DB12            ansible_host=192.168.10.53
 ELI-DC02            ansible_host=192.168.10.16
 ELI-AP01            ansible_host=192.168.10.40
+ELI-AP02            ansible_host=192.168.10.223
+ELI-FS01            ansible_host=192.168.10.35
+#ELI-DB11            ansible_host=192.168.10.52
+ELI-DB21            ansible_host=192.168.10.101
+PRO-IN06            ansible_host=192.168.10.100
 
 [pro_windows:vars]
 ansible_user=.\endiaz
