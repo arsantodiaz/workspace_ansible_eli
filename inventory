@@ -95,11 +95,11 @@ ELI-WS05    ansible_host=192.168.10.36
 ansible_python_interpreter=/usr/bin/python3.9
 
 [pro_windows]
-ELI-DB10    ansible_host=192.168.10.51
+ELI-DB10            ansible_host=192.168.10.51
+ELI-WS-NODE01       ansible_host=192.168.10.48
 
 [pro_windows:vars]
 ansible_user=.\endiaz
-
 ansible_connection=winrm
 ansible_port=5985
 ansible_winrm_transport=ntlm
