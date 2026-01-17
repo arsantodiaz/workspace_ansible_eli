@@ -37,6 +37,8 @@ sudo yum clean all
 # Rebuild cache (Harusnya sekarang lancar karena sudah ke Vault)
 sudo yum makecache
 
+sudo yum clean all && sudo yum makecache
+
 # Install Python 3.8
 sudo yum install rh-python38 -y
 

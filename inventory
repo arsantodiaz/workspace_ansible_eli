@@ -56,14 +56,45 @@ ansible_user=endiaz
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [pro_centos]
-UAT-PRO-IN01        ansible_host=192.168.10.71
-UAT-PRO-MW01        ansible_host=172.16.202.131
+PRO-IN01        ansible_host=192.168.10.71
+PRO-MW01        ansible_host=172.16.202.131
+PRO-MW02        ansible_host=172.16.202.132
+PRO-EX01        ansible_host=172.16.202.5
+PRO-EX02        ansible_host=172.16.202.6
+PRO-IN05        ansible_host=192.168.10.199
+DMZ-AP02        ansible_host=172.16.203.2
+DMZ-WS02        ansible_host=172.16.202.3
 
 [pro_centos:vars]
 ansible_python_interpreter=/opt/rh/rh-python38/root/usr/bin/python3
 
+[pro_centos9]
+PRO-EX06        ansible_host=172.16.203.6
+
+[pro_centos9:vars]
+ansible_python_interpreter=/bin/python3
+
+[pro_ubuntu]
+PRO-IN02    ansible_host=192.168.10.72
+ELI-DB20    ansible_host=192.168.10.54
+
+[pro_ubuntu:vars]
+ansible_python_interpreter=/usr/bin/python3
+
+[pro_rhel]
+PRO-AP06    ansible_host=192.168.10.50
+
+[pro_rhel:vars]
+ansible_python_interpreter=/usr/bin/python3.9
+
+
+
 [server_pro:children]
 pro_centos
+pro_centos9
+pro_ubuntu
+pro_rhel
+
 
 [server_pro:vars]
 ansible_user=endiaz
