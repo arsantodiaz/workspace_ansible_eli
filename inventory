@@ -1,3 +1,6 @@
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~ UAT Environment
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [uat_centos]
 UAT-MW01        ansible_host=172.16.201.131
 UAT-MW02        ansible_host=172.16.201.132
@@ -39,13 +42,28 @@ ansible_port=5985
 ansible_winrm_transport=ntlm
 ansible_winrm_server_cert_validation=ignore
 
-
-
 [server_uat:children]
 uat_centos
 uat_rhel
 uat_ubuntu
 
-
 [server_uat:vars]
+ansible_user=endiaz
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~ PRODUCTION Environment
+# ~ ansible -i inventory server_pro -m ping
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[pro_centos]
+UAT-PRO-IN01        ansible_host=192.168.10.71
+UAT-PRO-MW01        ansible_host=172.16.202.131
+
+[pro_centos:vars]
+ansible_python_interpreter=/opt/rh/rh-python38/root/usr/bin/python3
+
+[server_pro:children]
+pro_centos
+
+[server_pro:vars]
 ansible_user=endiaz

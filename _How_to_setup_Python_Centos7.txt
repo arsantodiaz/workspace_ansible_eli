@@ -1,0 +1,52 @@
+# 1. Masuk ke direktori repo
+cd /etc/yum.repos.d/
+
+# 2. Hapus file config SCL yang lama/rusak
+sudo rm -f CentOS-SCLo-scl.repo CentOS-SCLo-scl-rh.repo
+
+# 3. Buat file baru untuk repo SCLO (Software Collection)
+sudo tee CentOS-SCLo-scl.repo <<EOF
+[centos-sclo-sclo]
+name=CentOS-7 - SCLo sclo
+baseurl=http://vault.centos.org/centos/7/sclo/\$basearch/sclo/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
+EOF
+
+# 4. Buat file baru untuk repo RH (RedHat SCL) - Ini yang isi Python 3.8
+sudo tee CentOS-SCLo-scl-rh.repo <<EOF
+[centos-sclo-rh]
+name=CentOS-7 - SCLo rh
+baseurl=http://vault.centos.org/centos/7/sclo/\$basearch/rh/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
+EOF
+
+
+sudo yum-config-manager --disable epel 2>/dev/null || true
+# Atau cara manual kalau perintah di atas error:
+sudo sed -i 's/enabled=1/enabled=0/g' epel.repo 2>/dev/null || true
+
+sudo sed -i 's/gpgcheck=1/gpgcheck=0/g' /etc/yum.repos.d/CentOS-SCLo*.repo
+
+# Bersihkan cache
+sudo yum clean all
+
+# Rebuild cache (Harusnya sekarang lancar karena sudah ke Vault)
+sudo yum makecache
+
+# Install Python 3.8
+sudo yum install rh-python38 -y
+
+ls -l /opt/rh/rh-python38/root/usr/bin/python3
+
+
+
+
+
+
+Di server ansible
+ssh-keygen -t rsa
+ ssh-copy-id endiaz@172.16.201.8

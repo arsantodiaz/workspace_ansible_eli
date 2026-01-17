@@ -1,6 +1,6 @@
 ---
 - name: Setup Server Dasar
-  hosts: server_latihan
+  hosts: uat_centos
   become: yes
 
   tasks:
