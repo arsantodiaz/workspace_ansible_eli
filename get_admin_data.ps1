@@ -1,9 +1,12 @@
-# get_admin_data.ps1 (Versi Fix: LastLogin per Mesin)
+# get_admin_data.ps1 (Versi Format Tanggal Seragam)
 $ErrorActionPreference = 'SilentlyContinue'
 
 $domainUser = "elife\sys-it-dc"
 $domainPass = '2212ChillaBocil'
 $dcIP = "192.168.10.16"
+
+# Format string yang lo mau
+$fmt = "dddd, dd-MM-yyyy, HH:mm:ss"
 
 $rawOutput = net localgroup administrators
 
@@ -20,12 +23,12 @@ foreach ($line in $rawOutput) {
         $shortName = if ($fullName -match '\\') { $fullName.Split('\')[-1] } else { $fullName }
 
         if ($fullName -notmatch "ELIFE") {
-            # USER LOKAL (Tetap pake logika asli loe)
+            # USER LOKAL
             $usr = Get-LocalUser -Name $shortName
             if ($usr) {
                 $status = if ($usr.Enabled) { "Enabled" } else { "Disabled" }
-                $created = if ($usr.PasswordLastSet) { Get-Date($usr.PasswordLastSet) -Format "yyyy-MM-dd HH:mm:ss" } else { "N/A" }
-                $last_login = if ($usr.LastLogon) { Get-Date($usr.LastLogon) -Format "yyyy-MM-dd HH:mm:ss" } else { "Belum_Pernah" }
+                $created = if ($usr.PasswordLastSet) { (Get-Date $usr.PasswordLastSet).ToString($fmt) } else { "N/A" }
+                $last_login = if ($usr.LastLogon) { (Get-Date $usr.LastLogon).ToString($fmt) } else { "Belum_Pernah" }
             }
         } else {
             # USER DOMAIN
@@ -38,15 +41,14 @@ foreach ($line in $rawOutput) {
 
                 if ($res) {
                     $status = "Domain/External"
-                    # Created tetap dari AD (karena ini data pusat)
                     if ($res.Properties.whencreated) {
-                        $created = Get-Date($res.Properties.whencreated[0]) -Format "yyyy-MM-dd HH:mm:ss"
+                        $created = (Get-Date $res.Properties.whencreated[0]).ToString($fmt)
                     }
 
-                    # --- REVISI: LAST LOGIN DARI LOCAL PROFILE (Agar beda tiap PC) ---
+                    # Pakai Win32_UserProfile biar beda tiap PC (Logic tetep sama)
                     $userProfile = Get-CimInstance Win32_UserProfile | Where-Object { $_.LocalPath -like "*\$shortName" }
                     if ($userProfile.LastUseTime) {
-                        $last_login = Get-Date($userProfile.LastUseTime) -Format "yyyy-MM-dd HH:mm:ss"
+                        $last_login = (Get-Date $userProfile.LastUseTime).ToString($fmt)
                     } else {
                         $last_login = "Belum_Pernah_di_PC_Ini"
                     }
@@ -55,7 +57,7 @@ foreach ($line in $rawOutput) {
                 $status = "AD_Bind_Error"
             }
         }
-        # Output sesuai format asli loe
-        Write-Output "$fullName,Administrators,$status,$created,$last_login"
+        # Output sesuai format CSV lo
+        Write-Output "$fullName|Administrators|$status|$created|$last_login"
     }
 }

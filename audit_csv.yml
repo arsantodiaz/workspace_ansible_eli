@@ -8,10 +8,10 @@
   gather_facts: no
   tags: setup
   tasks:
-    - name: Buat Header CSV
+    - name: Buat Header CSV (Delimiter Pipe)
       copy:
         dest: "{{ playbook_dir }}/laporan_user_admin.csv"
-        content: "Hostname,IP_Address,Inventory_Group,Username,Group_Type,Status_Akun,Estimasi_Dibuat,Terakhir_Login\n"
+        content: "Hostname|IP_Address|Inventory_Group|Username|Group_Type|Status_Akun|Estimasi_Dibuat|Terakhir_Login\n"
         force: yes
 
 # ==========================================
@@ -28,23 +28,39 @@
       shell: |
         if [ -f /etc/redhat-release ]; then GRP="wheel"; else GRP="sudo"; fi
         USERS=$(getent group $GRP | awk -F: '{print $4}' | tr ',' ' ')
+        
+        export LANG=en_US.UTF-8
+
         for U in $USERS; do
             [ -z "$U" ] && continue
             
-            CREATED=$(stat -c %y /home/$U 2>/dev/null | cut -d'.' -f1 || echo "System/No-Home")
+            # FORMAT TANGGAL CREATED
+            RAW_CREATED=$(stat -c %y /home/$U 2>/dev/null | cut -d'.' -f1)
+            if [ -n "$RAW_CREATED" ]; then
+                CREATED=$(date -d "$RAW_CREATED" +"%A, %d-%m-%Y, %H:%M:%S")
+            else
+                CREATED="System/No-Home"
+            fi
             
-            LOGIN_RAW=$(lastlog -u $U | tail -n 1)
-            LAST_LOGIN=$(echo "$LOGIN_RAW" | grep -q "Never logged in" && echo "Belum_Pernah" || echo "$LOGIN_RAW" | awk '{print $4,$5,$6,$7,$8}')
+            # FORMAT TANGGAL LAST LOGIN
+            LOGIN_INFO=$(lastlog -u $U | tail -n 1)
+            if echo "$LOGIN_INFO" | grep -q "Never logged in"; then
+                LAST_LOGIN="Belum_Pernah"
+            else
+                RAW_LAST=$(echo "$LOGIN_INFO" | awk '{for(i=4;i<=NF;i++) printf $i" "; print ""}')
+                LAST_LOGIN=$(date -d "$RAW_LAST" +"%A, %d-%m-%Y, %H:%M:%S" 2>/dev/null || echo "Format_Error")
+            fi
             
+            # STATUS AKUN
             STATUS_RAW=$(passwd -S $U 2>/dev/null | awk '{print $2}')
             case "$STATUS_RAW" in
                 P|PS|U) STATUS="Enabled" ;;
                 L|LK)   STATUS="Disabled/Locked" ;;
-                NP)     STATUS="No-Password" ;;
                 *)      STATUS="Unknown ($STATUS_RAW)" ;;
             esac
             
-            echo "$U,$GRP,$STATUS,$CREATED,$LAST_LOGIN"
+            # Output pake pipe |
+            echo "$U|$GRP|$STATUS|$CREATED|$LAST_LOGIN"
         done
       register: hasil_audit
       ignore_errors: yes
@@ -52,7 +68,7 @@
     - name: Append Data Linux ke CSV
       lineinfile:
         path: "{{ playbook_dir }}/laporan_user_admin.csv"
-        line: "{{ inventory_hostname }},{{ ansible_host }},{{ group_names | reject('match', '^(all|server_.*|target_.*)$') | first | default('N/A') }},{{ item }}"
+        line: "{{ inventory_hostname }}|{{ ansible_host }}|{{ group_names | reject('match', '^(all|server_.*|target_.*)$') | first | default('N/A') }}|{{ item }}"
       with_items: "{{ hasil_audit.stdout_lines | default([]) }}"
       delegate_to: localhost
       become: no
@@ -71,26 +87,17 @@
       ansible.windows.win_shell: |
         {{ lookup('file', 'get_admin_data.ps1') }}
       register: win_audit_raw
-      vars:
-        # LOGIKANYA DISINI BOS:
-        # Kalo ELI-WS03 pake user lokal (2212ChillaBocil), sisanya pake domain user.
-        ansible_user: "{{ hostvars[inventory_hostname].ansible_user | default('elife\\endiaz') }}"
-        ansible_password: "{{ hostvars[inventory_hostname].ansible_password | default('HippaHippi2212*') }}"
 
     - name: Append Data Windows ke CSV
       delegate_to: localhost
       become: no
       lineinfile:
         path: "{{ playbook_dir }}/laporan_user_admin.csv"
-        line: "{{ inventory_hostname }},{{ ansible_host }},{{ group_names | reject('match', '^(all|server_.*|target_.*)$') | first | default('N/A') }},{{ item | trim }}"
+        line: "{{ inventory_hostname }}|{{ ansible_host }}|{{ group_names | reject('match', '^(all|server_.*|target_.*)$') | first | default('N/A') }}|{{ item | trim }}"
       with_items: "{{ win_audit_raw.stdout_lines | default([]) }}"
       when:
         - win_audit_raw.stdout_lines is defined
-        - "',' in item"
-
-#    - name: Debug Output Sebenarnya
-#      debug:
-#        msg: "Isi output adalah: {{ win_result.output }}"
+        - "'|' in item"
 
 # ==========================================
 # PLAY 3: Sortir Data
@@ -103,7 +110,7 @@
     - name: Sortir File CSV Berdasarkan Grup
       shell: |
         head -n 1 laporan_user_admin.csv > laporan_temp.csv
-        tail -n +2 laporan_user_admin.csv | sort -t, -k3,3 -k1,1 >> laporan_temp.csv
+        tail -n +2 laporan_user_admin.csv | sort -t'|' -k3,3 -k1,1 >> laporan_temp.csv
         mv laporan_temp.csv laporan_user_admin.csv
       args:
         chdir: "{{ playbook_dir }}"
