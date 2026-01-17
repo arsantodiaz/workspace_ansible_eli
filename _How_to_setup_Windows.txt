@@ -1,0 +1,17 @@
+
+
+Add-LocalGroupMember -Group "Remote Management Users" -Member "endiaz"
+Add-LocalGroupMember -Group "Administrators" -Member "endiaz"
+
+New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name LocalAccountTokenFilterPolicy -Value 1 -PropertyType DWord -Force
+
+New-NetFirewallRule -Name "Allow_WinRM_HTTP" -DisplayName "Allow WinRM HTTP" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 5985
+Restart-Service WinRM
+
+
+ansible -i inventory uat_windows -m win_ping
+
+ansible-vault encrypt_string '2212ChillaBocil' --name 'ansible_password'
+nano host_vars/UAT-WS06.yml
+
+

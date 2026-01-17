@@ -20,7 +20,7 @@
 # PLAY 2: Mining Data User LINUX
 # ==========================================
 - name: 2a. Mining Data User Linux
-  hosts: server_uat
+  hosts: server_uat:server_pro
   become: yes
   vars:
     target_group: "{{ 'wheel' if ansible_os_family == 'RedHat' else 'sudo' }}"

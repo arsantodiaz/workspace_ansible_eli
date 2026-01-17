@@ -64,12 +64,15 @@ PRO-EX02        ansible_host=172.16.202.6
 PRO-IN05        ansible_host=192.168.10.199
 DMZ-AP02        ansible_host=172.16.203.2
 DMZ-WS02        ansible_host=172.16.202.3
+ELI-AP03        ansible_host=192.168.10.41
 
 [pro_centos:vars]
 ansible_python_interpreter=/opt/rh/rh-python38/root/usr/bin/python3
 
 [pro_centos9]
 PRO-EX06        ansible_host=172.16.203.6
+ELI-AP04        ansible_host=192.168.10.42
+ELI-LO01        ansible_host=172.16.162.6
 
 [pro_centos9:vars]
 ansible_python_interpreter=/bin/python3
@@ -77,24 +80,36 @@ ansible_python_interpreter=/bin/python3
 [pro_ubuntu]
 PRO-IN02    ansible_host=192.168.10.72
 ELI-DB20    ansible_host=192.168.10.54
+ELI-DMSAPP  ansible_host=192.168.10.177
+ELI-DMSDB   ansible_host=192.168.10.178
+ELI-DMSFILESTORAGE   ansible_host=192.168.10.179
 
 [pro_ubuntu:vars]
 ansible_python_interpreter=/usr/bin/python3
 
 [pro_rhel]
 PRO-AP06    ansible_host=192.168.10.50
+ELI-WS05    ansible_host=192.168.10.36
 
 [pro_rhel:vars]
 ansible_python_interpreter=/usr/bin/python3.9
 
+[pro_windows]
+ELI-DB10    ansible_host=192.168.10.51
 
+[pro_windows:vars]
+ansible_user=.\endiaz
+
+ansible_connection=winrm
+ansible_port=5985
+ansible_winrm_transport=ntlm
+ansible_winrm_server_cert_validation=ignore
 
 [server_pro:children]
 pro_centos
 pro_centos9
 pro_ubuntu
 pro_rhel
+pro_windows
 
 
-[server_pro:vars]
-ansible_user=endiaz
