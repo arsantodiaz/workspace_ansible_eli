@@ -1,0 +1,55 @@
+---
+- name: Setup System Monitoring History (Sysstat/SAR)
+  hosts: target_docker # Ganti sesuai target server
+  become: yes
+  vars:
+    # Berapa hari log history disimpan? (Default biasanya cuma 7 atau 28)
+    history_retention_days: 30
+    # Interval pencatatan dalam menit (Semakin kecil semakin detail)
+    collection_interval_minutes: 1
+
+  tasks:
+    # ---------------------------------------------------------
+    # 1. INSTALL PACKAGE
+    # ---------------------------------------------------------
+    - name: Install sysstat package
+      yum:
+        name: sysstat
+        state: present
+
+    # ---------------------------------------------------------
+    # 2. CONFIGURATION (RETENTION)
+    # ---------------------------------------------------------
+    - name: Set durasi simpan log menjadi {{ history_retention_days }} hari
+      lineinfile:
+        path: /etc/sysconfig/sysstat
+        regexp: '^HISTORY='
+        line: "HISTORY={{ history_retention_days }}"
+        state: present
+      # File ini spesifik untuk RHEL/CentOS
+
+    # ---------------------------------------------------------
+    # 3. CONFIGURATION (INTERVAL) - High Resolution Monitoring
+    # ---------------------------------------------------------
+    - name: Ubah interval pencatatan menjadi setiap {{ collection_interval_minutes }} menit
+      replace:
+        path: /etc/cron.d/sysstat
+        # Regex ini mencari settingan default (biasanya */10) dan mengubahnya
+        regexp: '\*/[0-9]+'
+        replace: "*/{{ collection_interval_minutes }}"
+      notify: Restart Sysstat
+
+    # ---------------------------------------------------------
+    # 4. SERVICE MANAGEMENT
+    # ---------------------------------------------------------
+    - name: Start & Enable Service Sysstat
+      service:
+        name: sysstat
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart Sysstat
+      service:
+        name: sysstat
+        state: restarted

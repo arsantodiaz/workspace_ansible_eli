@@ -1,0 +1,64 @@
+---
+- name: Create Super Admin User (All Platforms)
+  hosts: all
+  become: no  # Kita atur privilege escalation per OS di bawah
+  vars:
+    # Ganti Username & Password di sini
+    admin_user: "sys-global"
+    admin_pass: "P@ssw0rdSangatRahasia2026!" # Password Plaintext
+
+    # Isi Public Key kamu (ssh-rsa AAAA....) biar login Linux gak pake password
+    # Kosongkan jika tidak ingin pasang key
+    admin_ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC..."
+
+  tasks:
+    # =========================================================
+    # TASK KHUSUS LINUX (CentOS / RHEL / Ubuntu / Debian)
+    # =========================================================
+    - name: Setup Admin on Linux
+      block:
+        - name: Tentukan Group Sudo (Wheel untuk RHEL, Sudo untuk Debian)
+          set_fact:
+            sudo_group: "{{ 'wheel' if ansible_os_family == 'RedHat' else 'sudo' }}"
+
+        - name: Buat User Linux & Masukkan ke Group Admin
+          user:
+            name: "{{ admin_user }}"
+            # Ansible otomatis meng-hash password plaintext menjadi SHA512
+            password: "{{ admin_pass | password_hash('sha512') }}"
+            groups: "{{ sudo_group }}"
+            append: yes
+            shell: /bin/bash
+            state: present
+            comment: "Global Admin via Ansible"
+
+        - name: Pasang SSH Key (Agar login tanpa password)
+          authorized_key:
+            user: "{{ admin_user }}"
+            state: present
+            key: "{{ admin_ssh_public_key }}"
+          when: admin_ssh_public_key | length > 20
+
+      # Syarat: Hanya jalankan jika BUKAN Windows
+      when: ansible_os_family != 'Windows'
+      become: yes # Butuh root di Linux
+
+    # =========================================================
+    # TASK KHUSUS WINDOWS
+    # =========================================================
+    - name: Setup Admin on Windows
+      block:
+        - name: Buat User Windows & Masukkan ke Group Administrators
+          ansible.windows.win_user:
+            name: "{{ admin_user }}"
+            password: "{{ admin_pass }}" # Windows terima plaintext via WinRM (Encrypted)
+            state: present
+            groups:
+              - Administrators
+            password_never_expires: yes
+            user_cannot_change_password: yes
+            description: "Global Admin via Ansible"
+
+      # Syarat: Hanya jalankan jika Windows
+      when: ansible_os_family == 'Windows'
+      # Windows tidak butuh 'become: yes' karena koneksi WinRM user kamu biasanya sudah admin
