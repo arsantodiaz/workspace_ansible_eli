@@ -1,0 +1,151 @@
+---
+- name: Setup Production Ready Docker (Ubuntu)
+  hosts: pro_ubuntu_new
+  become: yes
+  vars:
+    docker_admin_users:
+      - "endiaz"
+      - "sys-admin-eli"
+
+    # Partisi khusus Docker (Sesuai info kamu)
+    docker_partition_dev: "/dev/sda5"
+    docker_data_dir: "/var/lib/docker"
+
+  tasks:
+    # =========================================================
+    # 1. STORAGE & PARTITION CHECK
+    # =========================================================
+    - name: Pastikan folder data docker ada
+      file:
+        path: "{{ docker_data_dir }}"
+        state: directory
+        mode: '0711'
+
+    - name: Pastikan /dev/sda5 termounting ke /var/lib/docker
+      mount:
+        path: "{{ docker_data_dir }}"
+        src: "{{ docker_partition_dev }}"
+        fstype: ext4  # Sesuaikan jika xfs
+        state: mounted
+        opts: defaults
+      # Ini penting agar kalau server restart, dia auto-mount.
+      # Kalau gagal mount, docker tidak akan dijalankan (safety).
+
+    # =========================================================
+    # 2. CLEANUP & PRE-REQ
+    # =========================================================
+    - name: Hapus paket Docker bawaan Ubuntu (unofficial/tua)
+      apt:
+        name:
+          - docker.io
+          - docker-doc
+          - docker-compose
+          - docker-compose-v2
+          - podman-docker
+          - containerd
+          - runc
+        state: absent
+        autoremove: yes
+
+    - name: Install dependencies sistem
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+        update_cache: yes
+
+    # =========================================================
+    # 3. REPOSITORY SETUP (OFFICIAL)
+    # =========================================================
+    - name: Buat direktori keyrings
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download Docker GPG Key Resmi
+      get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+        force: yes
+
+    - name: Tambahkan Repository Docker ke Apt Sources
+      shell: |
+        echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+        $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+        sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      args:
+        creates: /etc/apt/sources.list.d/docker.list
+
+    - name: Update apt cache setelah nambah repo
+      apt:
+        update_cache: yes
+
+    # =========================================================
+    # 4. INSTALL ENGINE & COMPOSE V2
+    # =========================================================
+    - name: Install Docker CE, CLI, Containerd, dan Compose V2
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    # =========================================================
+    # 5. HARDENING & OPTIMIZATION (Daemon.json)
+    # =========================================================
+    - name: Konfigurasi Docker Daemon (Logging & Live Restore)
+      copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {
+            "data-root": "{{ docker_data_dir }}",
+            "log-driver": "json-file",
+            "log-opts": {
+              "max-size": "10m",
+              "max-file": "5"
+            },
+            "live-restore": true,
+            "userland-proxy": false,
+            "no-new-privileges": true,
+            "default-ulimits": {
+              "nofile": {
+                "Name": "nofile",
+                "Hard": 64000,
+                "Soft": 64000
+              }
+            }
+          }
+        mode: '0644'
+      notify: Restart Docker
+
+    # =========================================================
+    # 6. USER ACCESS & SERVICE
+    # =========================================================
+    - name: Start & Enable Service Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Masukkan User Admin ke Group Docker
+      user:
+        name: "{{ item }}"
+        groups: docker
+        append: yes
+      loop: "{{ docker_admin_users }}"
+      ignore_errors: yes # Ignore kalau user belum dibuat
+
+  handlers:
+    - name: Restart Docker
+      service:
+        name: docker
+        state: restarted

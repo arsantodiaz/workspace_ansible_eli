@@ -85,6 +85,10 @@ ELI-DMSAPP              ansible_host=192.168.10.177
 ELI-DMSDB               ansible_host=192.168.10.178
 ELI-DMSFILESTORAGE      ansible_host=192.168.10.179
 
+[pro_ubuntu_new]
+ELI-AP104               ansible_host=192.168.10.75
+
+
 [pro_ubuntu:vars]
 ansible_python_interpreter=/usr/bin/python3
 
