@@ -99,3 +99,13 @@ docker info | grep "Docker Root Dir"
 docker run --rm hello-world
 ```
 
+##### ✅ Jalankan shell di remote host
+```bash
+ansible pro_ubuntu_new -i inventory -m shell -a "ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head -6" --become -K
+```
+
+docker exec jenkins-blueocean cat /var/jenkins_home/secrets/initialAdminPassword
+
+
+
+

@@ -1,0 +1,51 @@
+---
+- name: Install & Verify Sysstat (SAR)
+  hosts: pro_ubuntu_new
+  become: yes
+  tasks:
+    # -------------------------------------------------------
+    # 1. INSTALL PACKAGE
+    # -------------------------------------------------------
+    - name: Install sysstat package
+      apt:
+        name: sysstat
+        state: present
+        update_cache: yes
+
+    # -------------------------------------------------------
+    # 2. KONFIGURASI (PENTING UNTUK UBUNTU)
+    # -------------------------------------------------------
+    # Di Ubuntu, defaultnya sysstat itu "disabled" di file config.
+    # Kita harus ubah ENABLED="false" jadi "true" biar jalan.
+    - name: Enable Sysstat Collection in /etc/default/sysstat
+      lineinfile:
+        path: /etc/default/sysstat
+        regexp: '^ENABLED='
+        line: 'ENABLED="true"'
+      notify: Restart Sysstat
+
+    # -------------------------------------------------------
+    # 3. SERVICE MANAGEMENT
+    # -------------------------------------------------------
+    - name: Start & Enable Service Sysstat
+      service:
+        name: sysstat
+        state: started
+        enabled: yes
+
+    # -------------------------------------------------------
+    # 4. VERIFIKASI (TEST SAR)
+    # -------------------------------------------------------
+    - name: Test ambil data CPU (Live 3 detik)
+      command: sar -u 1 3
+      register: sar_result
+
+    - name: Tampilkan Hasil SAR
+      debug:
+        var: sar_result.stdout_lines
+
+  handlers:
+    - name: Restart Sysstat
+      service:
+        name: sysstat
+        state: restarted

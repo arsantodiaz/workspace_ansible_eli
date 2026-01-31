@@ -1,0 +1,43 @@
+---
+- name: Deploy Jenkins Configuration Files
+  hosts: pro_ubuntu_new  # Target server (ELI-AP104)
+  become: yes            # Butuh root karena menulis ke folder /data
+  vars:
+    # 1. Konversi Path Windows ke Format WSL (Linux)
+    # D:\Workspace...  menjadi  /mnt/d/Workspace...
+    local_source_dir: "/mnt/d/Workspace__SysAdmin/Deployment_DevOps/-Docker-Jenkins-/"
+
+    # 2. Lokasi Tujuan di Server
+    remote_dest_dir: "/data/jenkins"
+
+    # User pemilik file (sesuaikan dengan user docker kamu)
+    owner_user: "endiaz"
+    owner_group: "docker"
+
+  tasks:
+    # ---------------------------------------------------------
+    # 1. SIAPKAN FOLDER TUJUAN
+    # ---------------------------------------------------------
+    - name: Pastikan direktori /data/jenkins tersedia
+      file:
+        path: "{{ remote_dest_dir }}"
+        state: directory
+        owner: "{{ owner_user }}"
+        group: "{{ owner_group }}"
+        mode: '0755'
+      # Parent directory (/data) akan otomatis dibuat jika belum ada
+
+    # ---------------------------------------------------------
+    # 2. COPY FOLDER DARI LAPTOP KE SERVER
+    # ---------------------------------------------------------
+    - name: Copy isi folder Jenkins ke Server
+      copy:
+        src: "{{ local_source_dir }}"
+        dest: "{{ remote_dest_dir }}/"
+        owner: "{{ owner_user }}"
+        group: "{{ owner_group }}"
+        mode: '0644' # Permission file standar
+        directory_mode: '0755' # Permission folder
+      # PENTING:
+      # Tanda '/' di akhir 'src' artinya: Copy ISI foldernya saja (bukan foldernya).
+      # Tanpa tanda '/', nanti jadinya /data/jenkins/-Docker-Jenkins-/...
