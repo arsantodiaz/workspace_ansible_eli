@@ -1,0 +1,105 @@
+---
+- name: Install Essential Sysadmin & Security Tools (Ubuntu)
+  hosts: sit_ubuntu
+  become: yes
+  vars:
+    # Daftar paket lengkap
+    common_packages:
+      # 1. Utilities Dasar
+      - tree
+      - curl
+      - wget
+      - git
+      - unzip
+      - jq
+      - vim
+      # 2. Monitoring & Performance
+      - btop
+      - htop
+      - sysstat
+      - iotop
+      - ncdu
+      # 3. Networking Debugging
+      - net-tools
+      - dnsutils
+      - iputils-ping
+      - tcpdump
+      # 4. Security Tools
+      - rkhunter
+      - fail2ban
+      - auditd
+      - acl
+      # 5. Python Libraries (UNTUK ANSIBLE & PASSWORD)
+      - python3-passlib
+      - python3-docker
+      - python3-pip
+
+  tasks:
+    # -------------------------------------------------------
+    # 1. UPDATE CACHE & INSTALL PACKAGES
+    # -------------------------------------------------------
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Common Packages
+      apt:
+        name: "{{ common_packages }}"
+        state: present
+
+    # -------------------------------------------------------
+    # 2. FIX RKHUNTER CONFIG (SOLUSI ERROR WEB_CMD)
+    # -------------------------------------------------------
+    # Kita ubah config agar rkhunter bisa update database
+    - name: Fix rkhunter configuration for Ubuntu/Debian
+      replace:
+        path: /etc/rkhunter.conf
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}"
+      loop:
+        - { regexp: '^UPDATE_MIRRORS=0', replace: 'UPDATE_MIRRORS=1' }
+        - { regexp: '^MIRRORS_MODE=1', replace: 'MIRRORS_MODE=0' }
+        - { regexp: '^WEB_CMD="/bin/false"', replace: 'WEB_CMD=""' }
+
+    # -------------------------------------------------------
+    # 3. KONFIGURASI SYSSTAT (SAR)
+    # -------------------------------------------------------
+    - name: Enable Sysstat Collection
+      lineinfile:
+        path: /etc/default/sysstat
+        regexp: '^ENABLED='
+        line: 'ENABLED="true"'
+      notify: Restart Sysstat Service
+
+    # -------------------------------------------------------
+    # 4. RKHUNTER UPDATE & PROPUPD
+    # -------------------------------------------------------
+    - name: Update Rkhunter Data Files (Database)
+      command: rkhunter --update
+      register: rkhunter_update
+      failed_when: false # Abaikan jika mirror sibuk, rkhunter sering baper
+      changed_when: "rkhunter_update.rc == 0"
+
+    - name: Snapshot File Properties (Propupd)
+      command: rkhunter --propupd
+      changed_when: false
+
+    # -------------------------------------------------------
+    # 5. SERVICE MANAGEMENT
+    # -------------------------------------------------------
+    - name: Pastikan Service Monitoring & Security Jalan
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - sysstat
+        - fail2ban
+        - cron
+
+  handlers:
+    - name: Restart Sysstat Service
+      service:
+        name: sysstat
+        state: restarted

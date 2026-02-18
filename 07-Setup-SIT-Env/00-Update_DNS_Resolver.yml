@@ -1,0 +1,34 @@
+---
+- name: Setup DNS Resolver Permanen (Systemd-Resolved) - FIXED
+  hosts: sit_ubuntu
+  become: yes
+  tasks:
+    # -------------------------------------------------------
+    # 1. CLEANUP & SET CONFIG
+    # -------------------------------------------------------
+    - name: Overwrite resolved.conf dengan config bersih (Max 3 IP)
+      copy:
+        dest: /etc/systemd/resolved.conf
+        content: |
+          [Resolve]
+          DNS=172.16.202.12 172.16.204.1 8.8.8.8
+          FallbackDNS=1.1.1.1 9.9.9.9
+          DNSStubListener=yes
+      notify: Restart Resolved Service
+
+    # -------------------------------------------------------
+    # 2. FIX SYMLINK (Sangat Penting untuk Ubuntu)
+    # -------------------------------------------------------
+    - name: Pastikan link resolv.conf mengarah ke uplink asli
+      file:
+        src: /run/systemd/resolve/resolv.conf
+        dest: /etc/resolv.conf
+        state: link
+        force: yes
+      notify: Restart Resolved Service
+
+  handlers:
+    - name: Restart Resolved Service
+      service:
+        name: systemd-resolved
+        state: restarted

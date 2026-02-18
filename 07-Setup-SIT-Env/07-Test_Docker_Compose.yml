@@ -1,0 +1,58 @@
+---
+- name: Test Docker Compose Deployment as Jenkins-Deployer
+  hosts: sit_ubuntu
+  # Kita pakai user jenkins-deployer untuk ngetes permission /data
+  become: yes
+  become_user: jenkins-deployer
+  vars:
+    project_path: "/data/test_docker"
+
+  tasks:
+    # -------------------------------------------------------
+    # 1. PREPARASI FOLDER
+    # -------------------------------------------------------
+    - name: Create project directory
+      file:
+        path: "{{ project_path }}"
+        state: directory
+        mode: '0775'
+
+    # -------------------------------------------------------
+    # 2. CREATE DOCKER COMPOSE FILE
+    # -------------------------------------------------------
+    - name: Create docker-compose.yml
+      copy:
+        dest: "{{ project_path }}/docker-compose.yml"
+        content: |
+          services:
+            maven-test:
+              image: maven:3.9.6-eclipse-temurin-17-alpine
+              container_name: maven_container_test
+              # Kita kasih command sleep biar container gak langsung mati
+              command: sleep infinity
+              restart: always
+
+    # -------------------------------------------------------
+    # 3. DOCKER OPERATIONS (Down then Up)
+    # -------------------------------------------------------
+    - name: Stop and remove existing containers (Down)
+      shell: "docker compose down"
+      args:
+        chdir: "{{ project_path }}"
+      ignore_errors: yes # Abaikan jika belum ada container yang jalan
+
+    - name: Start containers (Up -d)
+      shell: "docker compose up -d"
+      args:
+        chdir: "{{ project_path }}"
+
+    # -------------------------------------------------------
+    # 4. VERIFIKASI (Mvn Version)
+    # -------------------------------------------------------
+    - name: Check Maven Version inside container
+      shell: "docker exec maven_container_test mvn -version"
+      register: mvn_output
+
+    - name: Show Maven Version Result
+      debug:
+        msg: "{{ mvn_output.stdout_lines }}"

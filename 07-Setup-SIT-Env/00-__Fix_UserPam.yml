@@ -1,0 +1,33 @@
+---
+- name: Fix SSH Whitelist and User Access
+  hosts: sit_ubuntu
+  become: yes
+  tasks:
+    # 1. Tambahkan user ke AllowUsers di sshd_config
+    - name: Add jenkins-deployer to AllowUsers in SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^AllowUsers (.*)'
+        line: 'AllowUsers \1 jenkins-deployer'
+        backrefs: yes
+      notify: Restart SSH
+
+    # 2. Pastikan password tidak expired dan akun tidak locked
+    - name: Force unlock and set password expiry
+      shell: |
+        usermod -U jenkins-deployer
+        chage -M 99999 -m 0 -I -1 -E -1 jenkins-deployer
+      changed_when: false
+
+    # 3. Masukkan jenkins-deployer ke group sudo (Opsional, agar lebih 'powerfull')
+    - name: Add to sudo group
+      user:
+        name: jenkins-deployer
+        groups: sudo,docker
+        append: yes
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted

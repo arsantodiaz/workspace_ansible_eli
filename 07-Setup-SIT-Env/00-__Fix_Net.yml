@@ -1,0 +1,56 @@
+---
+- name: Hard Reset Jaringan & DNS (Recovery Mode)
+  hosts: sit_ubuntu
+  become: yes
+  tasks:
+    # -------------------------------------------------------
+    # 1. CLEANUP DNS (Fix "Too Many DNS Servers")
+    # -------------------------------------------------------
+    - name: Reset resolved.conf ke kondisi bersih
+      copy:
+        dest: /etc/systemd/resolved.conf
+        content: |
+          [Resolve]
+          DNS=172.16.202.12 172.16.204.1 8.8.8.8
+          FallbackDNS=1.1.1.1
+          DNSStubListener=yes
+      notify: Restart Resolved
+
+    # -------------------------------------------------------
+    # 2. FIX SUBNET MASK (Change /25 to /24)
+    # -------------------------------------------------------
+    - name: Ganti semua /25 menjadi /24 di Netplan
+      replace:
+        path: "{{ item }}"
+        regexp: '/25'
+        replace: '/24'
+      with_fileglob:
+        - "/etc/netplan/*.yaml"
+      register: netplan_fix
+
+    - name: Apply Netplan
+      command: netplan apply
+      when: netplan_fix.changed
+
+    # -------------------------------------------------------
+    # 3. DISABLE FIREWALL (Biar gak ada yang nge-blok)
+    # -------------------------------------------------------
+    - name: Matikan UFW sementara untuk testing
+      ufw:
+        state: disabled
+
+    # -------------------------------------------------------
+    # 4. FIX SYMLINK DNS (PENTING!)
+    # -------------------------------------------------------
+    - name: Pastikan link resolv.conf mengarah ke sistem yang benar
+      file:
+        src: /run/systemd/resolve/resolv.conf
+        dest: /etc/resolv.conf
+        state: link
+        force: yes
+
+  handlers:
+    - name: Restart Resolved
+      service:
+        name: systemd-resolved
+        state: restarted
