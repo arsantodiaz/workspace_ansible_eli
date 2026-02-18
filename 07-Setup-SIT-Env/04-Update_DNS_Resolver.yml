@@ -1,0 +1,45 @@
+---
+- name: Setup DNS Resolver Permanen (Systemd-Resolved)
+  hosts: sit_ubuntu
+  become: yes
+  tasks:
+    # -------------------------------------------------------
+    # 1. EDIT CONFIG SYSTEMD-RESOLVED
+    # -------------------------------------------------------
+    - name: Set DNS Server Utama & Backup di resolved.conf
+      lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: '^#?DNS='
+        # DNS dipisahkan spasi. Yang pertama prioritas.
+        line: 'DNS=172.16.202.12 8.8.8.8'
+        state: present
+      notify: Restart Resolved Service
+
+    - name: Set Fallback DNS (Jaga-jaga)
+      lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: '^#?FallbackDNS='
+        line: 'FallbackDNS=1.1.1.1 9.9.9.9'
+        state: present
+      notify: Restart Resolved Service
+
+    # -------------------------------------------------------
+    # 2. OPSI TAMBAHAN: SYMLINK MANAGEMENT (Opsional)
+    # -------------------------------------------------------
+    # Secara default Ubuntu mengarahkan resolv.conf ke 127.0.0.53 (Local Stub).
+    # Jika kamu mau saat di 'cat /etc/resolv.conf' munculnya IP ASLI (bukan 127.0.0.53),
+    # kita ubah symlink-nya ke mode 'uplink'.
+
+    - name: Ubah Symlink resolv.conf agar menampilkan IP asli (Bukan 127.0.0.53)
+      file:
+        src: /run/systemd/resolve/resolv.conf
+        dest: /etc/resolv.conf
+        state: link
+        force: yes
+      notify: Restart Resolved Service
+
+  handlers:
+    - name: Restart Resolved Service
+      service:
+        name: systemd-resolved
+        state: restarted

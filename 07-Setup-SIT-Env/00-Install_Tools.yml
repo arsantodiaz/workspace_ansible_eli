@@ -1,0 +1,95 @@
+---
+- name: Install Essential Sysadmin & Security Tools (Ubuntu)
+  hosts: sit_ubuntu  # Bisa diganti 'all' atau group lain
+  become: yes
+  vars:
+    # List paket yang mau diinstall
+    common_packages:
+      # 1. Utilities Dasar
+      - tree              # Visualisasi struktur folder
+      - curl
+      - wget
+      - git
+      - unzip
+      - jq                # JSON processor (Penting buat Docker inspect)
+      - vim               # Text editor
+
+      # 2. Monitoring & Performance
+      - btop              # Resource monitor modern (Visual bagus)
+      - htop              # Resource monitor klasik
+      - sysstat           # SAR (System Activity Report) - Logging history
+      - iotop             # Monitor Disk I/O per process
+      - ncdu              # Cek penggunaan disk (Disk Usage Analyzer)
+
+      # 3. Networking Debugging
+      - net-tools         # command: netstat, ifconfig
+      - dnsutils          # command: dig, nslookup
+      - iputils-ping      # command: ping
+      - tcpdump           # Packet analyzer (wireshark versi cli)
+
+      # 4. Security Tools
+      - rkhunter          # Rootkit Hunter
+      - fail2ban          # Ban IP yang brute-force SSH
+      - auditd            # Audit daemon (Log aktivitas sistem detail)
+      - acl               # Access Control List (penting buat setfacl permission folder)
+
+      # 5. Python Libraries (PENTING BUAT ANSIBLE)
+      - python3-passlib   # Wajib ada biar Ansible bisa hash password user
+      - python3-docker    # Wajib ada biar Ansible bisa kontrol Docker
+
+  tasks:
+    # -------------------------------------------------------
+    # 1. UPDATE CACHE & INSTALL PACKAGES
+    # -------------------------------------------------------
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Common Packages
+      apt:
+        name: "{{ common_packages }}"
+        state: present
+
+    # -------------------------------------------------------
+    # 2. KONFIGURASI SYSSTAT (SAR)
+    # -------------------------------------------------------
+    # Default Ubuntu: Sysstat terinstall tapi collection-nya MATI.
+    - name: Enable Sysstat Collection (Edit /etc/default/sysstat)
+      lineinfile:
+        path: /etc/default/sysstat
+        regexp: '^ENABLED='
+        line: 'ENABLED="true"'
+      notify: Restart Sysstat Service
+
+    # -------------------------------------------------------
+    # 3. KONFIGURASI RKHUNTER (Initial Check)
+    # -------------------------------------------------------
+    - name: Update Rkhunter Data Files (Database Definition)
+      command: rkhunter --update
+      ignore_errors: yes # Kadang error koneksi mirror, abaikan saja
+      changed_when: false
+
+    - name: Snapshot File Properties (Propupd)
+      # Ini penting biar rkhunter tau kondisi file system saat ini 'bersih'
+      command: rkhunter --propupd
+      changed_when: false
+
+    # -------------------------------------------------------
+    # 4. SERVICE MANAGEMENT
+    # -------------------------------------------------------
+    - name: Pastikan Service Monitoring & Security Jalan
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - sysstat
+        - fail2ban
+        - cron   # Sysstat butuh cron buat jalan tiap 10 menit
+
+  handlers:
+    - name: Restart Sysstat Service
+      service:
+        name: sysstat
+        state: restarted

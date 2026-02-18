@@ -1,0 +1,136 @@
+---
+- name: Install Docker Production Grade (Custom Storage & Config)
+  hosts: sit_ubuntu
+  become: yes
+  vars:
+    # User Admin Docker
+    docker_admin_users:
+      - "endiaz"
+      - "sys-admin-eli"
+
+    # Konfigurasi Storage Strategy
+    docker_partition_mount: "/var/lib/docker"
+    containerd_target_dir: "/var/lib/docker/containerd_storage"
+    containerd_link_path: "/var/lib/containerd"
+
+  tasks:
+    # =======================================================
+    # STEP 1: PERSIAPAN STORAGE (Agar containerd masuk partisi besar)
+    # =======================================================
+    - name: Pastikan Mount Point Docker ada
+      file:
+        path: "{{ docker_partition_mount }}"
+        state: directory
+        mode: '0710'
+
+    - name: Buat Folder Khusus containerd di partisi besar
+      file:
+        path: "{{ containerd_target_dir }}"
+        state: directory
+        mode: '0711'
+
+    - name: Cek kondisi folder asli /var/lib/containerd
+      stat:
+        path: "{{ containerd_link_path }}"
+      register: containerd_stat
+
+    - name: Hapus folder asli jika bukan symlink (Clean start)
+      file:
+        path: "{{ containerd_link_path }}"
+        state: absent
+      when: containerd_stat.stat.exists and (not containerd_stat.stat.islnk)
+
+    - name: Buat Symlink /var/lib/containerd -> Partisi Besar
+      file:
+        src: "{{ containerd_target_dir }}"
+        dest: "{{ containerd_link_path }}"
+        state: link
+        force: yes
+
+    # =======================================================
+    # STEP 2: INSTALL DOCKER ENGINE
+    # =======================================================
+    - name: Install dependencies (curl, ca-certificates)
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+        state: present
+        update_cache: yes
+
+    - name: Add Docker GPG Key
+      shell: |
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
+      args:
+        creates: /etc/apt/keyrings/docker.asc
+
+    - name: Add Docker Repository
+      shell: |
+        echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+        $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+        tee /etc/apt/sources.list.d/docker.list > /dev/null
+      args:
+        creates: /etc/apt/sources.list.d/docker.list
+
+    - name: Install Docker Packages
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+    # =======================================================
+    # STEP 3: KONFIGURASI DAEMON (Config PRO Kamu)
+    # =======================================================
+    - name: Apply Docker Daemon Configuration
+      copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {
+            "data-root": "/var/lib/docker",
+            "log-driver": "json-file",
+            "log-opts": {
+              "max-size": "10m",
+              "max-file": "5"
+            },
+            "live-restore": true,
+            "userland-proxy": false,
+            "no-new-privileges": true,
+            "default-ulimits": {
+              "nofile": {
+                "Name": "nofile",
+                "Hard": 64000,
+                "Soft": 64000
+              }
+            },
+            "insecure-registries": [
+              "nexus.deployment.myequity.id:9582",
+              "nexus.deployment.myequity.id:9583"
+            ]
+          }
+      notify: Restart Docker
+
+    # =======================================================
+    # STEP 4: USER ACCESS
+    # =======================================================
+    - name: Add admin users to docker group
+      user:
+        name: "{{ item }}"
+        groups: docker
+        append: yes
+      loop: "{{ docker_admin_users }}"
+      ignore_errors: yes
+
+  handlers:
+    - name: Restart Docker
+      service:
+        name: docker
+        state: restarted

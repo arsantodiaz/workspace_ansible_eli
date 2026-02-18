@@ -1,0 +1,43 @@
+---
+- name: Security Audit dengan Lynis (Output HTML)
+  hosts: sit_ubuntu
+  become: yes
+  tasks:
+    # -------------------------------------------------------
+    # 1. INSTALL TOOLS
+    # -------------------------------------------------------
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Lynis dan AHA (Pengganti ansi2html)
+      apt:
+        name:
+          - lynis
+          - aha     # <--- Kita pakai ini, lebih gampang dapetnya di Ubuntu
+        state: present
+
+    # -------------------------------------------------------
+    # 2. JALANKAN AUDIT
+    # -------------------------------------------------------
+    - name: Running Lynis Audit System
+      # Flag 'aha -b' artinya Black Background (biar tulisan warna-warni kebaca)
+      shell: |
+        lynis audit system --quick | aha -b > /tmp/lynis_report_{{ inventory_hostname }}.html
+      register: lynis_output
+      ignore_errors: yes
+
+    # -------------------------------------------------------
+    # 3. AMBIL LAPORAN KE LAPTOP (FETCH)
+    # -------------------------------------------------------
+    - name: Download Report HTML ke Laptop
+      fetch:
+        src: "/tmp/lynis_report_{{ inventory_hostname }}.html"
+        dest: "./laporan_audit/"
+        flat: yes
+
+    - name: Bersihkan file report di server
+      file:
+        path: "/tmp/lynis_report_{{ inventory_hostname }}.html"
+        state: absent

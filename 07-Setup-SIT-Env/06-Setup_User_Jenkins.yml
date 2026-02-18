@@ -1,0 +1,72 @@
+---
+- name: Setup Jenkins Deployer User & Permission Data
+  hosts: sit_ubuntu
+  become: yes
+  vars:
+    # Ini password "c1SUnwK2yVie5N7" yang sudah di-vault
+    jenkins_pass: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      64333066653763306530333030373732653665616437316334303837303762613234656262343163
+      6664643364626532353866636162633164343434313066630a376138346435666564326561666635
+      37376635636538326161613264623962633530323864306533323639663438326162633534643165
+      3765326266313831380a326634653137383637343634636436353836663465316532663633303638
+      6361
+
+  tasks:
+    # 1. Pastikan library hashing ada di laptop (Control Node)
+    # Biasanya sudah ada, tapi jaga-jaga
+    - name: Ensure passlib is installed on controller (delegate_to localhost)
+      pip:
+        name: passlib
+        state: present
+      delegate_to: localhost
+      run_once: true
+      become: no
+      ignore_errors: yes
+
+    # 2. Buat User Jenkins Deployer (DENGAN HASHING)
+    - name: Create User jenkins-deployer
+      user:
+        name: jenkins-deployer
+        # PERHATIKAN BAGIAN INI: ditambah filter password_hash
+        password: "{{ jenkins_pass | password_hash('sha512') }}"
+        shell: /bin/bash
+        groups: docker
+        append: yes
+        state: present
+        update_password: always # Paksa update password kalau hash beda
+
+    # 3. Masukkan Root ke Group Docker
+    - name: Ensure Root is in docker group
+      user:
+        name: root
+        groups: docker
+        append: yes
+
+    # 4. Atur Permission Folder /data (Group Docker)
+    - name: Set Group Owner /data ke 'docker'
+      file:
+        path: /data
+        owner: root
+        group: docker
+        mode: '0775'
+        state: directory
+
+    # 5. ACL Setup
+    - name: Set ACL untuk jenkins-deployer di /data
+      acl:
+        path: /data
+        entity: jenkins-deployer
+        etype: user
+        permissions: rwx
+        state: present
+        recursive: yes
+
+    - name: Set Default ACL (Masa Depan)
+      acl:
+        path: /data
+        entity: jenkins-deployer
+        etype: user
+        permissions: rwx
+        state: present
+        default: yes

@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- This file was created with the aha Ansi HTML Adapter. https://github.com/theZiz/aha -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>stdin</title>
+</head>
+<body style="color:white; background-color:black">
+<pre>
+
+<span style="font-weight:bold;color:white;">[ Lynis 3.0.9 ]</span>
+
+################################################################################
+  Lynis comes with ABSOLUTELY NO WARRANTY. This is free software, and you are
+  welcome to redistribute it under the terms of the GNU General Public License.
+  See the LICENSE file for details about using this software.
+
+  2007-2021, CISOfy - https://cisofy.com/lynis/
+  Enterprise support available (compliance, plugins, interface and tools)
+################################################################################
+
+
+[+] <span style="font-weight:bold;color:yellow;">Initializing program</span>
+------------------------------------
+- Detecting OS...  [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+- Checking profiles... [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+
+  ---------------------------------------------------
+  Program version:           3.0.9
+  Operating system:          Linux
+  Operating system name:     Ubuntu
+  Operating system version:  24.04
+  Kernel version:            6.8.0
+  Hardware platform:         x86_64
+  Hostname:                  SIT-EX102
+  ---------------------------------------------------
+  Profiles:                  /etc/lynis/default.prf
+  Log file:                  /var/log/lynis.log
+  Report file:               /var/log/lynis-report.dat
+  Report version:            1.0
+  Plugin directory:          /etc/lynis/plugins
+  ---------------------------------------------------
+  Auditor:                   [Not Specified]
+  Language:                  en
+  Test category:             all
+  Test group:                all
+  ---------------------------------------------------
+- Program update status...  [ <span style="font-weight:bold;color:lime;">NO UPDATE</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">System tools</span>
+------------------------------------
+- Scanning available tools...
+- Checking system binaries...
+
+[+] <span style="font-weight:bold;color:fuchsia;">Plugins (phase 1)</span>
+------------------------------------
+Note: plugins have more extensive tests and may take several minutes to complete
+ 
+- <span style="color:aqua;">Plugin</span>: <span style="font-weight:bold;color:white;">debian</span>
+    [
+[+] <span style="font-weight:bold;color:yellow;">Debian Tests</span>
+------------------------------------
+- Checking for system binaries that are required by Debian Tests...
+- Checking /bin...  [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking /sbin...  [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking /usr/bin...  [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking /usr/sbin...  [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking /usr/local/bin...  [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking /usr/local/sbin...  [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Authentication:
+- PAM (Pluggable Authentication Modules):
+
+  <span style="color:dimgray;background-color:yellow;">[WARNING]</span>: Test DEB-0001 had a long execution: 15.653871 seconds
+
+- libpam-tmpdir [ <span style="font-weight:bold;color:red;">Not Installed</span> ]
+- File System Checks:
+- DM-Crypt, Cryptsetup &amp; Cryptmount:
+- Checking / on /dev/sda2 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
+- Checking /data on /dev/sdb1 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
+- Checking /boot/efi on /dev/sda1 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
+- Checking /tmp on /dev/sda6 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
+- Checking /home on /dev/sda7 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
+- Checking /var on /dev/sda3 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
+- Checking /var/lib/docker on /dev/sda5 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
+- Checking /var/log on /dev/sda4 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
+- Software:
+- apt-listbugs [ <span style="font-weight:bold;color:red;">Not Installed</span> ]
+- apt-listchanges [ <span style="font-weight:bold;color:red;">Not Installed</span> ]
+- needrestart [ <span style="font-weight:bold;color:lime;">Installed</span> ]
+- fail2ban [ <span style="font-weight:bold;color:yellow;">Installed with jail.conf</span> ]
+]
+
+[+] <span style="font-weight:bold;color:yellow;">Boot and services</span>
+------------------------------------
+- Service Manager [ <span style="font-weight:bold;color:lime;">systemd</span> ]
+- Checking UEFI boot [ <span style="font-weight:bold;color:lime;">ENABLED</span> ]
+- Checking Secure Boot [ <span style="font-weight:bold;color:yellow;">DISABLED</span> ]
+- Checking presence GRUB2 [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking for password protection [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Check running services (systemctl) [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+Result: found 24 running services
+- Check enabled services at boot (systemctl) [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+Result: found 53 enabled services
+- Check startup files (permissions) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Running 'systemd-analyze security'
+- ModemManager.service: [ <span style="font-weight:bold;color:white;">MEDIUM</span> ]
+- atd.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- auditd.service: [ <span style="font-weight:bold;color:yellow;">EXPOSED</span> ]
+- chrony.service: [ <span style="font-weight:bold;color:lime;">PROTECTED</span> ]
+- cron.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- dbus.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- dm-event.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- dmesg.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- emergency.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- fail2ban.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- getty@tty1.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- iscsid.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- lvm2-lvmpolld.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- lynis.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- multipathd.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- networkd-dispatcher.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- open-vm-tools.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- packagekit.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- plymouth-start.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- polkit.service: [ <span style="font-weight:bold;color:lime;">PROTECTED</span> ]
+- postfix@-.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- rc-local.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- rescue.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- rsyslog.service: [ <span style="font-weight:bold;color:white;">MEDIUM</span> ]
+- snapd.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- ssh.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- systemd-ask-password-console.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- systemd-ask-password-plymouth.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- systemd-ask-password-wall.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- systemd-bsod.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- systemd-fsckd.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- systemd-initctl.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- systemd-journald.service: [ <span style="font-weight:bold;color:lime;">PROTECTED</span> ]
+- systemd-logind.service: [ <span style="font-weight:bold;color:lime;">PROTECTED</span> ]
+- systemd-networkd.service: [ <span style="font-weight:bold;color:lime;">PROTECTED</span> ]
+- systemd-resolved.service: [ <span style="font-weight:bold;color:lime;">PROTECTED</span> ]
+- systemd-rfkill.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- systemd-udevd.service: [ <span style="font-weight:bold;color:white;">MEDIUM</span> ]
+- thermald.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- tpm-udev.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- ubuntu-advantage.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- udisks2.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- unattended-upgrades.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- upower.service: [ <span style="font-weight:bold;color:lime;">PROTECTED</span> ]
+- user@1001.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- uuidd.service: [ <span style="font-weight:bold;color:white;">MEDIUM</span> ]
+- vgauth.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- wazuh-agent.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Kernel</span>
+------------------------------------
+- Checking default run level [ <span style="font-weight:bold;color:lime;">RUNLEVEL 5</span> ]
+- Checking CPU support (NX/PAE)
+CPU support: PAE and/or NoeXecute supported [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking kernel version and release [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+- Checking kernel type [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+- Checking loaded kernel modules [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+Found 84 active modules
+- Checking Linux kernel configuration file [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking default I/O kernel scheduler [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Checking for available kernel update [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking core dumps configuration
+- configuration in systemd conf files [ <span style="font-weight:bold;color:white;">DEFAULT</span> ]
+- configuration in /etc/profile [ <span style="font-weight:bold;color:white;">DEFAULT</span> ]
+- 'hard' configuration in /etc/security/limits.conf [ <span style="font-weight:bold;color:lime;">DISABLED</span> ]
+- 'soft' config in /etc/security/limits.conf (implicit) [ <span style="font-weight:bold;color:lime;">DISABLED</span> ]
+- Checking setuid core dumps configuration [ <span style="font-weight:bold;color:lime;">DISABLED</span> ]
+- Check if reboot is needed [ <span style="font-weight:bold;color:lime;">NO</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Memory and Processes</span>
+------------------------------------
+- Checking /proc/meminfo [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Searching for dead/zombie processes [ <span style="font-weight:bold;color:lime;">NOT FOUND</span> ]
+- Searching for IO waiting processes [ <span style="font-weight:bold;color:lime;">NOT FOUND</span> ]
+- Search prelink tooling [ <span style="font-weight:bold;color:lime;">NOT FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Users, Groups and Authentication</span>
+------------------------------------
+- Administrator accounts [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Unique UIDs [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Consistency of group files (grpck) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Unique group IDs [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Unique group names [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Password file consistency [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Password hashing methods [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- Checking password hashing rounds [ <span style="font-weight:bold;color:yellow;">DISABLED</span> ]
+- Query system users (non daemons) [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+- NIS+ authentication support [ <span style="font-weight:bold;color:white;">NOT ENABLED</span> ]
+- NIS authentication support [ <span style="font-weight:bold;color:white;">NOT ENABLED</span> ]
+- Sudoers file(s) [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Permissions for directory: /etc/sudoers.d [ <span style="font-weight:bold;color:red;">WARNING</span> ]
+- Permissions for: /etc/sudoers [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Permissions for: /etc/sudoers.d/README [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Permissions for: /etc/sudoers.d/audit_logging [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Permissions for: /etc/sudoers.d/01_logging [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- PAM password strength tools [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- PAM configuration files (pam.conf) [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- PAM configuration files (pam.d) [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- PAM modules [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- LDAP module in PAM [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Accounts without expire date [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Accounts without password [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Locked accounts [ <span style="font-weight:bold;color:red;">FOUND</span> ]
+- User password aging (minimum) [ <span style="font-weight:bold;color:lime;">CONFIGURED</span> ]
+- User password aging (maximum) [ <span style="font-weight:bold;color:lime;">CONFIGURED</span> ]
+- Checking expired passwords [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking Linux single user mode authentication [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Determining default umask
+- umask (/etc/profile and /etc/profile.d) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- umask (/etc/login.defs) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- LDAP authentication support [ <span style="font-weight:bold;color:white;">NOT ENABLED</span> ]
+- Logging failed login attempts [ <span style="font-weight:bold;color:lime;">ENABLED</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Shells</span>
+------------------------------------
+- Checking shells from /etc/shells
+Result: found 9 shells (valid shells: 9).
+- Session timeout settings/tools [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking default umask values
+- Checking default umask in /etc/bash.bashrc [ <span style="font-weight:bold;color:yellow;">NONE</span> ]
+- Checking default umask in /etc/profile [ <span style="font-weight:bold;color:lime;">OK</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">File systems</span>
+------------------------------------
+- Checking mount points
+- Checking /home mount point [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking /tmp mount point [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking /var mount point [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Query swap partitions (fstab) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Testing swap partitions [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Testing /proc mount (hidepid) [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- Checking for old files in /tmp [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking /tmp sticky bit [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking /var/tmp sticky bit [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- ACL support root file system [ <span style="font-weight:bold;color:lime;">ENABLED</span> ]
+- Mount options of / [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Mount options of /dev [ <span style="font-weight:bold;color:yellow;">PARTIALLY HARDENED</span> ]
+- Mount options of /dev/shm [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
+- Mount options of /home [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
+- Mount options of /run [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
+- Mount options of /tmp [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
+- Mount options of /var [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
+- Mount options of /var/log [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
+- Mount options of /var/log/audit [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
+- Mount options of /var/tmp [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
+- Total without nodev:6 noexec:10 nosuid:4 ro or noexec (W^X): 10 of total 31
+- /var/tmp is bound to /tmp [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Disable kernel support of some filesystems
+
+[+] <span style="font-weight:bold;color:yellow;">USB Devices</span>
+------------------------------------
+- Checking usb-storage driver (modprobe config) [ <span style="font-weight:bold;color:lime;">DISABLED</span> ]
+- Checking USB devices authorization [ <span style="font-weight:bold;color:yellow;">ENABLED</span> ]
+- Checking USBGuard [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Storage</span>
+------------------------------------
+- Checking firewire ohci driver (modprobe config) [ <span style="font-weight:bold;color:lime;">DISABLED</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">NFS</span>
+------------------------------------
+- Check running NFS daemon [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Name services</span>
+------------------------------------
+- Checking search domains [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking /etc/resolv.conf options [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Searching DNS domain name [ <span style="font-weight:bold;color:yellow;">UNKNOWN</span> ]
+- Checking /etc/hosts
+- Duplicate entries in hosts file [ <span style="font-weight:bold;color:lime;">NONE</span> ]
+- Presence of configured hostname in /etc/hosts [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Hostname mapped to localhost [ <span style="font-weight:bold;color:lime;">NOT FOUND</span> ]
+- Localhost mapping to IP address [ <span style="font-weight:bold;color:lime;">OK</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Ports and packages</span>
+------------------------------------
+- Searching package managers
+- Searching dpkg package manager [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Querying package manager
+- Query unpurged packages [ <span style="font-weight:bold;color:yellow;">FOUND</span> ]
+- debsums utility [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Cron job for debsums [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking security repository in sources.list.d directory [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking APT package database [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking vulnerable packages [ <span style="font-weight:bold;color:lime;">OK</span> ]
+
+  <span style="color:dimgray;background-color:yellow;">[WARNING]</span>: Test PKGS-7392 had a long execution: 11.157961 seconds
+
+- Checking upgradeable packages [ <span style="font-weight:bold;color:yellow;">FOUND</span> ]
+- Checking package audit tool [ <span style="font-weight:bold;color:lime;">INSTALLED</span> ]
+Found: apt-check
+- Toolkit for automatic upgrades (unattended-upgrade) [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Networking</span>
+------------------------------------
+- Checking IPv6 configuration [ <span style="font-weight:bold;color:white;">ENABLED</span> ]
+Configuration method [ <span style="font-weight:bold;color:white;">MANUAL</span> ]
+IPv6 only [ <span style="font-weight:bold;color:white;">NO</span> ]
+- Checking configured nameservers
+- Testing nameservers
+Nameserver: 127.0.0.53 [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- DNSSEC supported (systemd-resolved) [ <span style="font-weight:bold;color:red;">UNKNOWN</span> ]
+- Checking default gateway [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+- Getting listening ports (TCP/UDP) [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+- Checking promiscuous interfaces [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking waiting connections [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking status DHCP client
+- Checking for ARP monitoring software [ <span style="font-weight:bold;color:yellow;">NOT FOUND</span> ]
+- Uncommon network protocols [ <span style="font-weight:bold;color:lime;">NOT FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Printers and Spools</span>
+------------------------------------
+- Checking cups daemon [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Checking lp daemon [ <span style="font-weight:bold;color:white;">NOT RUNNING</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Software: e-mail and messaging</span>
+------------------------------------
+
+[+] <span style="font-weight:bold;color:yellow;">Software: firewalls</span>
+------------------------------------
+- Checking iptables kernel module [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking iptables policies of chains [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking for empty ruleset [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking for unused rules [ <span style="font-weight:bold;color:yellow;">FOUND</span> ]
+- Checking host based firewall [ <span style="font-weight:bold;color:lime;">ACTIVE</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Software: webserver</span>
+------------------------------------
+- Checking Apache [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Checking nginx [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">SSH Support</span>
+------------------------------------
+- Checking running SSH daemon [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Searching SSH configuration [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- OpenSSH option: AllowTcpForwarding [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- OpenSSH option: ClientAliveCountMax [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- OpenSSH option: ClientAliveInterval [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: FingerprintHash [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: GatewayPorts [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: IgnoreRhosts [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: LoginGraceTime [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: LogLevel [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- OpenSSH option: MaxAuthTries [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- OpenSSH option: MaxSessions [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- OpenSSH option: PermitRootLogin [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: PermitUserEnvironment [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: PermitTunnel [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: Port [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- OpenSSH option: PrintLastLog [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: StrictModes [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: TCPKeepAlive [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- OpenSSH option: UseDNS [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: X11Forwarding [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- OpenSSH option: AllowAgentForwarding [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- OpenSSH option: AllowUsers [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- OpenSSH option: AllowGroups [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">SNMP Support</span>
+------------------------------------
+- Checking running SNMP daemon [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Databases</span>
+------------------------------------
+No database engines found
+
+[+] <span style="font-weight:bold;color:yellow;">LDAP Services</span>
+------------------------------------
+- Checking OpenLDAP instance [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">PHP</span>
+------------------------------------
+- Checking PHP [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Squid Support</span>
+------------------------------------
+- Checking running Squid daemon [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Logging and files</span>
+------------------------------------
+- Checking for a running log daemon [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking Syslog-NG status [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Checking systemd journal status [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking Metalog status [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Checking RSyslog status [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking RFC 3195 daemon status [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Checking minilogd instances [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Checking logrotate presence [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking remote logging [ <span style="font-weight:bold;color:lime;">ENABLED</span> ]
+- Checking log directories (static list) [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+- Checking open log files [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+- Checking deleted files in use [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Insecure services</span>
+------------------------------------
+- Installed inetd package [ <span style="font-weight:bold;color:lime;">NOT FOUND</span> ]
+- Installed xinetd package [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- xinetd status
+- Installed rsh client package [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Installed rsh server package [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Installed telnet client package [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Installed telnet server package [ <span style="font-weight:bold;color:lime;">NOT FOUND</span> ]
+- Checking NIS client installation [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking NIS server installation [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking TFTP client installation [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking TFTP server installation [ <span style="font-weight:bold;color:lime;">OK</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Banners and identification</span>
+------------------------------------
+- /etc/issue [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- /etc/issue contents [ <span style="font-weight:bold;color:yellow;">WEAK</span> ]
+- /etc/issue.net [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- /etc/issue.net contents [ <span style="font-weight:bold;color:yellow;">WEAK</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Scheduled tasks</span>
+------------------------------------
+- Checking crontab and cronjob files [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+- Checking atd status [ <span style="font-weight:bold;color:lime;">RUNNING</span> ]
+- Checking at users [ <span style="font-weight:bold;color:lime;">DONE</span> ]
+- Checking at jobs [ <span style="font-weight:bold;color:lime;">NONE</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Accounting</span>
+------------------------------------
+- Checking accounting information [ <span style="font-weight:bold;color:yellow;">NOT FOUND</span> ]
+- Checking sysstat accounting data [ <span style="font-weight:bold;color:lime;">ENABLED</span> ]
+- Checking auditd [ <span style="font-weight:bold;color:lime;">ENABLED</span> ]
+- Checking audit rules [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking audit configuration file [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking auditd log file [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Time and Synchronization</span>
+------------------------------------
+- NTP daemon found: chronyd [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking for a running NTP daemon or client [ <span style="font-weight:bold;color:lime;">OK</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Cryptography</span>
+------------------------------------
+- Checking for expired SSL certificates [0/151] [ <span style="font-weight:bold;color:lime;">NONE</span> ]
+
+  <span style="color:dimgray;background-color:yellow;">[WARNING]</span>: Test CRYP-7902 had a long execution: 17.516068 seconds
+
+- Found 0 encrypted and 1 unencrypted swap devices in use. [ <span style="font-weight:bold;color:white;">OK</span> ]
+- Kernel entropy is sufficient [ <span style="font-weight:bold;color:lime;">YES</span> ]
+- HW RNG &amp; rngd [ <span style="font-weight:bold;color:yellow;">NO</span> ]
+- SW prng [ <span style="font-weight:bold;color:yellow;">NO</span> ]
+- MOR variable not found [ <span style="font-weight:bold;color:white;">WEAK</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Virtualization</span>
+------------------------------------
+
+[+] <span style="font-weight:bold;color:yellow;">Containers</span>
+------------------------------------
+
+[+] <span style="font-weight:bold;color:yellow;">Security frameworks</span>
+------------------------------------
+- Checking presence AppArmor [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking AppArmor status [ <span style="font-weight:bold;color:lime;">ENABLED</span> ]
+Found 56 unconfined processes
+- Checking presence SELinux [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Checking presence TOMOYO Linux [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Checking presence grsecurity [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Checking for implemented MAC framework [ <span style="font-weight:bold;color:lime;">OK</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Software: file integrity</span>
+------------------------------------
+- Checking file integrity tools
+- AIDE [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- AIDE config file [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- AIDE database [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- dm-integrity (status) [ <span style="font-weight:bold;color:white;">DISABLED</span> ]
+- dm-verity (status) [ <span style="font-weight:bold;color:white;">DISABLED</span> ]
+- AIDE config (Checksum) [ <span style="font-weight:bold;color:yellow;">Suggestion</span> ]
+- Checking presence integrity tool [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Software: System tooling</span>
+------------------------------------
+- Checking automation tooling
+- Automation tooling [ <span style="font-weight:bold;color:yellow;">NOT FOUND</span> ]
+- Checking presence of Fail2ban [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Checking Fail2ban jails [ <span style="font-weight:bold;color:lime;">ENABLED</span> ]
+- Checking for IDS/IPS tooling [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Software: Malware</span>
+------------------------------------
+- Checking Rootkit Hunter [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Malware software components [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Active agent [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
+- Rootkit scanner [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">File Permissions</span>
+------------------------------------
+- Starting file permissions check
+File: /boot/grub/grub.cfg [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/at.allow [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/cron.allow [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/crontab [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/group [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/group- [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/hosts.allow [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/hosts.deny [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/issue [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/issue.net [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/passwd [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/passwd- [ <span style="font-weight:bold;color:lime;">OK</span> ]
+File: /etc/ssh/sshd_config [ <span style="font-weight:bold;color:lime;">OK</span> ]
+Directory: /root/.ssh [ <span style="font-weight:bold;color:lime;">OK</span> ]
+Directory: /etc/cron.d [ <span style="font-weight:bold;color:lime;">OK</span> ]
+Directory: /etc/cron.daily [ <span style="font-weight:bold;color:lime;">OK</span> ]
+Directory: /etc/cron.hourly [ <span style="font-weight:bold;color:lime;">OK</span> ]
+Directory: /etc/cron.weekly [ <span style="font-weight:bold;color:lime;">OK</span> ]
+Directory: /etc/cron.monthly [ <span style="font-weight:bold;color:lime;">OK</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Home directories</span>
+------------------------------------
+- Permissions of home directories [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Ownership of home directories [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- Checking shell history files [ <span style="font-weight:bold;color:lime;">OK</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Kernel Hardening</span>
+------------------------------------
+- Comparing sysctl key pairs with scan profile
+- dev.tty.ldisc_autoload (exp: 0) [ <span style="font-weight:bold;color:red;">DIFFERENT</span> ]
+- fs.protected_fifos (exp: 2) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- fs.protected_hardlinks (exp: 1) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- fs.protected_regular (exp: 2) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- fs.protected_symlinks (exp: 1) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- fs.suid_dumpable (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- kernel.core_uses_pid (exp: 1) [ <span style="font-weight:bold;color:red;">DIFFERENT</span> ]
+- kernel.ctrl-alt-del (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- kernel.dmesg_restrict (exp: 1) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- kernel.kptr_restrict (exp: 2) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- kernel.modules_disabled (exp: 1) [ <span style="font-weight:bold;color:red;">DIFFERENT</span> ]
+- kernel.perf_event_paranoid (exp: 3) [ <span style="font-weight:bold;color:red;">DIFFERENT</span> ]
+- kernel.randomize_va_space (exp: 2) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- kernel.sysrq (exp: 0) [ <span style="font-weight:bold;color:red;">DIFFERENT</span> ]
+- kernel.unprivileged_bpf_disabled (exp: 1) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- kernel.yama.ptrace_scope (exp: 1 2 3) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.core.bpf_jit_harden (exp: 2) [ <span style="font-weight:bold;color:red;">DIFFERENT</span> ]
+- net.ipv4.conf.all.accept_redirects (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.conf.all.accept_source_route (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.conf.all.bootp_relay (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.conf.all.forwarding (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.conf.all.log_martians (exp: 1) [ <span style="font-weight:bold;color:red;">DIFFERENT</span> ]
+- net.ipv4.conf.all.mc_forwarding (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.conf.all.proxy_arp (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.conf.all.rp_filter (exp: 1) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.conf.all.send_redirects (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.conf.default.accept_redirects (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.conf.default.accept_source_route (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.conf.default.log_martians (exp: 1) [ <span style="font-weight:bold;color:red;">DIFFERENT</span> ]
+- net.ipv4.icmp_echo_ignore_broadcasts (exp: 1) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.icmp_ignore_bogus_error_responses (exp: 1) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.tcp_syncookies (exp: 1) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv4.tcp_timestamps (exp: 0 1) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv6.conf.all.accept_redirects (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv6.conf.all.accept_source_route (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv6.conf.default.accept_redirects (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+- net.ipv6.conf.default.accept_source_route (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Hardening</span>
+------------------------------------
+- Installed compiler(s) [ <span style="font-weight:bold;color:red;">FOUND</span> ]
+- Installed malware scanner [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
+- Non-native binary formats [ <span style="font-weight:bold;color:red;">FOUND</span> ]
+
+[+] <span style="font-weight:bold;color:yellow;">Custom tests</span>
+------------------------------------
+- Running custom tests...  [ <span style="font-weight:bold;color:white;">NONE</span> ]
+
+[+] <span style="font-weight:bold;color:fuchsia;">Plugins (phase 2)</span>
+------------------------------------
+
+================================================================================
+
+  -[ <span style="font-weight:bold;color:white;">Lynis 3.0.9 Results</span> ]-
+
+  <span style="font-weight:bold;color:lime;">Great, no warnings</span>
+
+  <span style="font-weight:bold;color:yellow;">Suggestions</span> (26):
+  <span style="font-weight:bold;color:white;">----------------------------</span>
+  <span style="font-weight:bold;color:yellow;">*</span> This release is more than 4 months old. Check the website or GitHub to see if there is an update available. [LYNIS] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/LYNIS/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Install libpam-tmpdir to set $TMP and $TMPDIR for PAM sessions [DEB-0280] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/DEB-0280/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Install apt-listbugs to display a list of critical bugs prior to each APT installation. [DEB-0810] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/DEB-0810/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Install apt-listchanges to display any significant changes prior to any upgrade via APT. [DEB-0811] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/DEB-0811/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Copy /etc/fail2ban/jail.conf to jail.local to prevent it being changed by updates. [DEB-0880] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/DEB-0880/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Consider hardening system services [BOOT-5264] 
+    - Details  : <span style="color:aqua;">Run '/usr/bin/systemd-analyze security SERVICE' for each service</span>
+      <span style="color:white;">https://cisofy.com/lynis/controls/BOOT-5264/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Check PAM configuration, add rounds if applicable and expire passwords to encrypt with new values [AUTH-9229] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/AUTH-9229/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Configure password hashing rounds in /etc/login.defs [AUTH-9230] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/AUTH-9230/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Look at the locked accounts and consider removing them [AUTH-9284] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/AUTH-9284/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Check DNS configuration for the dns domain name [NAME-4028] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/NAME-4028/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Purge old/removed packages (3 found) with aptitude purge or dpkg --purge command. This will cleanup old configuration files, cron jobs and startup scripts. [PKGS-7346] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/PKGS-7346/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Check iptables rules to see which rules are currently not used [FIRE-4513] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/FIRE-4513/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Consider hardening SSH configuration [SSH-7408] 
+    - Details  : <span style="color:aqua;">AllowTcpForwarding (set YES to NO)</span>
+      <span style="color:white;">https://cisofy.com/lynis/controls/SSH-7408/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Consider hardening SSH configuration [SSH-7408] 
+    - Details  : <span style="color:aqua;">ClientAliveCountMax (set 3 to 2)</span>
+      <span style="color:white;">https://cisofy.com/lynis/controls/SSH-7408/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Consider hardening SSH configuration [SSH-7408] 
+    - Details  : <span style="color:aqua;">LogLevel (set INFO to VERBOSE)</span>
+      <span style="color:white;">https://cisofy.com/lynis/controls/SSH-7408/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Consider hardening SSH configuration [SSH-7408] 
+    - Details  : <span style="color:aqua;">MaxAuthTries (set 4 to 3)</span>
+      <span style="color:white;">https://cisofy.com/lynis/controls/SSH-7408/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Consider hardening SSH configuration [SSH-7408] 
+    - Details  : <span style="color:aqua;">MaxSessions (set 4 to 2)</span>
+      <span style="color:white;">https://cisofy.com/lynis/controls/SSH-7408/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Consider hardening SSH configuration [SSH-7408] 
+    - Details  : <span style="color:aqua;">Port (set 22 to )</span>
+      <span style="color:white;">https://cisofy.com/lynis/controls/SSH-7408/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Consider hardening SSH configuration [SSH-7408] 
+    - Details  : <span style="color:aqua;">TCPKeepAlive (set YES to NO)</span>
+      <span style="color:white;">https://cisofy.com/lynis/controls/SSH-7408/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Consider hardening SSH configuration [SSH-7408] 
+    - Details  : <span style="color:aqua;">AllowAgentForwarding (set YES to NO)</span>
+      <span style="color:white;">https://cisofy.com/lynis/controls/SSH-7408/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Add a legal banner to /etc/issue, to warn unauthorized users [BANN-7126] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/BANN-7126/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Add legal banner to /etc/issue.net, to warn unauthorized users [BANN-7130] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/BANN-7130/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Enable process accounting [ACCT-9622] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/ACCT-9622/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Use SHA256 or SHA512 to create checksums in AIDE [FINT-4402] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/FINT-4402/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Determine if automation tools are present for system management [TOOL-5002] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/TOOL-5002/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> One or more sysctl values differ from the scan profile and could be tweaked [KRNL-6000] 
+    - Solution : Change sysctl value or disable test (skip-test=KRNL-6000:&lt;sysctl-key&gt;)
+      <span style="color:white;">https://cisofy.com/lynis/controls/KRNL-6000/</span>
+
+  <span style="color:aqua;">Follow-up</span>:
+  <span style="font-weight:bold;color:white;">----------------------------</span>
+  <span style="font-weight:bold;color:white;">-</span> Show details of a test (lynis show details TEST-ID)
+  <span style="font-weight:bold;color:white;">-</span> Check the logfile for all details (less /var/log/lynis.log)
+  <span style="font-weight:bold;color:white;">-</span> Read security controls texts (https://cisofy.com)
+  <span style="font-weight:bold;color:white;">-</span> Use --upload to upload data to central system (Lynis Enterprise users)
+
+================================================================================
+
+  <span style="font-weight:bold;color:white;">Lynis security scan details</span>:
+
+  <span style="color:aqua;">Hardening index</span> : <span style="font-weight:bold;color:white;">80</span> [<span style="font-weight:bold;color:lime;">################</span>    ]
+  <span style="color:aqua;">Tests performed</span> : <span style="font-weight:bold;color:white;">262</span>
+  <span style="color:aqua;">Plugins enabled</span> : <span style="font-weight:bold;color:white;">1</span>
+
+  <span style="font-weight:bold;color:white;">Components</span>:
+  - Firewall               [<span style="font-weight:bold;color:lime;">V</span>]
+  - Malware scanner        [<span style="font-weight:bold;color:lime;">V</span>]
+
+  <span style="font-weight:bold;color:yellow;">Scan mode</span>:
+  Normal [V]  Forensics [ ]  Integration [ ]  Pentest [ ]
+
+  <span style="font-weight:bold;color:yellow;">Lynis modules</span>:
+  - Compliance status      [<span style="font-weight:bold;color:yellow;">?</span>]
+  - Security audit         [<span style="font-weight:bold;color:lime;">V</span>]
+  - Vulnerability scan     [<span style="font-weight:bold;color:lime;">V</span>]
+
+  <span style="font-weight:bold;color:yellow;">Files</span>:
+  - Test and debug information      : <span style="font-weight:bold;color:white;">/var/log/lynis.log</span>
+  - Report data                     : <span style="font-weight:bold;color:white;">/var/log/lynis-report.dat</span>
+
+================================================================================
+
+  <span style="font-weight:bold;color:white;">Lynis</span> 3.0.9
+
+  Auditing, system hardening, and compliance for UNIX-based systems
+  (Linux, macOS, BSD, and others)
+
+  2007-2021, CISOfy - https://cisofy.com/lynis/
+  <span style="font-weight:bold;color:white;">Enterprise support available (compliance, plugins, interface and tools)</span>
+
+================================================================================
+
+  <span style="background-color:#3333FF;">[TIP]</span>: <span style="filter: contrast(70%) brightness(190%);color:#3333FF;">Enhance Lynis audits by adding your settings to custom.prf (see /etc/lynis/default.prf for all settings)</span>
+
+</pre>
+</body>
+</html>
