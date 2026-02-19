@@ -1,0 +1,88 @@
+---
+- name: Install and Configure Wazuh Agent
+  hosts: sit_ubuntu
+  become: yes
+  vars:
+    wazuh_manager_ip: "172.16.203.18"
+    wazuh_deb_url: "https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.14.3-1_amd64.deb"
+    download_path: "/data/wazuh-agent"
+
+  tasks:
+    # -------------------------------------------------------
+    # 1. PREPARASI & DOWNLOAD
+    # -------------------------------------------------------
+    - name: Create download directory for Wazuh
+      file:
+        path: "{{ download_path }}"
+        state: directory
+        mode: '0755'
+
+    - name: Download Wazuh Agent package
+      get_url:
+        url: "{{ wazuh_deb_url }}"
+        dest: "{{ download_path }}/wazuh-agent.deb"
+
+    # -------------------------------------------------------
+    # 2. INSTALASI
+    # -------------------------------------------------------
+    - name: Install Wazuh Agent package (Using WAZUH_MANAGER env)
+      shell: "WAZUH_MANAGER='{{ wazuh_manager_ip }}' dpkg -i {{ download_path }}/wazuh-agent.deb"
+      register: install_result
+
+    # -------------------------------------------------------
+    # 3. KONFIGURASI (FIXED GROUP NAME)
+    # -------------------------------------------------------
+    - name: Configure Wazuh Agent (Overwrite ossec.conf)
+      copy:
+        dest: /var/ossec/etc/ossec.conf
+        owner: root
+        group: wazuh  # <--- INI PERBAIKANNYA (Ganti dari ossec ke wazuh)
+        mode: '0660'
+        content: |
+          <ossec_config>
+            <client>
+              <server><address>{{ wazuh_manager_ip }}</address></server>
+              <auto_restart>yes</auto_restart>
+            </client>
+
+            <wodle name="docker-listener">
+              <disabled>no</disabled>
+            </wodle>
+
+            <wodle name="syscollector">
+              <disabled>no</disabled>
+              <interval>1h</interval>
+              <scan_on_start>yes</scan_on_start>
+              <synchronization><max_eps>50</max_eps></synchronization>
+            </wodle>
+
+            <sca>
+              <enabled>yes</enabled>
+              <scan_on_start>yes</scan_on_start>
+              <interval>1h</interval>
+            </sca>
+
+            <syscheck>
+              <disabled>no</disabled>
+              <scan_on_start>yes</scan_on_start>
+            </syscheck>
+
+            <logging><log_format>plain</log_format></logging>
+          </ossec_config>
+      notify: Restart Wazuh Agent
+
+    # -------------------------------------------------------
+    # 4. SERVICE MANAGEMENT
+    # -------------------------------------------------------
+    - name: Daemon reload and Enable Wazuh Agent
+      systemd:
+        name: wazuh-agent
+        daemon_reload: yes
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: Restart Wazuh Agent
+      service:
+        name: wazuh-agent
+        state: restarted
