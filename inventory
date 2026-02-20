@@ -6,6 +6,7 @@
 SIT-MW101       ansible_host=172.16.204.130
 SIT-EX102       ansible_host=172.16.204.5
 SIT-EX101       ansible_host=172.16.204.4
+SIT-IN101       ansible_host=172.16.163.11
 
 [sit_ubuntu:vars]
 ansible_user=endiaz

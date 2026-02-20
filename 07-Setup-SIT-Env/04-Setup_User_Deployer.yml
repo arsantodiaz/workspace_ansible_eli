@@ -1,0 +1,190 @@
+---
+- name: Setup Jenkins Deployer & Test Python Docker Case
+  hosts: sit_ubuntu
+  become: yes
+  vars:
+    # Password "c1SUnwK2yVie5N7"
+    jenkins_pass: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      64333066653763306530333030373732653665616437316334303837303762613234656262343163
+      6664643364626532353866636162633164343434313066630a376138346435666564326561666635
+      37376635636538326161613264623962633530323864306533323639663438326162633534643165
+      3765326266313831380a326634653137383637343634636436353836663465316532663633303638
+      6361
+
+    # Path Testing
+    test_user: "jenkins-deployer"
+    test_path: "/data/test_python"
+    log_path: "/data-log/test_python"
+    doc_path: "/data-doc/test_python"
+
+  tasks:
+    # =======================================================
+    # 1. SETUP USER (Berdasarkan file 04-Setup_User_Deployer)
+    # =======================================================
+    - name: Ensure group 'sugroup' exists
+      group:
+        name: sugroup
+        state: present
+
+    - name: Create User jenkins-deployer
+      user:
+        name: "{{ test_user }}"
+        password: "{{ jenkins_pass | trim | password_hash('sha512') }}"
+        shell: /bin/bash
+        groups: docker,sugroup
+        append: yes
+        state: present
+        update_password: always
+
+    - name: Set Password Age to immediate
+      shell: "chage -m 0 -M 99999 {{ test_user }}"
+      changed_when: false
+
+    - name: Check if AllowUsers is defined in sshd_config
+      shell: grep -q "^AllowUsers" /etc/ssh/sshd_config
+      register: allow_users_check
+      failed_when: false
+      changed_when: false
+
+    - name: Add jenkins-deployer to AllowUsers
+      replace:
+        path: /etc/ssh/sshd_config
+        regexp: '^(AllowUsers(?!.*\b{{ test_user }}\b).*)$'
+        replace: '\1 {{ test_user }}'
+      when: allow_users_check.rc == 0
+      notify: Restart SSH
+
+    - name: Ensure /data directory exists
+      file:
+        path: /data
+        state: directory
+        owner: root
+        group: docker
+        mode: '0775'
+
+    - name: Set ACL permissions for jenkins-deployer
+      acl:
+        path: /data
+        entity: "{{ test_user }}"
+        etype: user
+        permissions: rwx
+        state: present
+        recursive: yes
+
+    - name: Create Ansible tmp directory for jenkins-deployer
+      file:
+        path: "/home/{{ test_user }}/.ansible/tmp"
+        state: directory
+        owner: "{{ test_user }}"
+        group: "{{ test_user }}"
+        mode: '0755'
+
+    # =======================================================
+    # 2. PREPARASI TEST CASE PYTHON
+    # =======================================================
+    - name: Create sub-directories for mapping
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ test_user }}"
+        group: docker
+        mode: '0775'
+      loop:
+        - "{{ test_path }}"
+        - "{{ log_path }}"
+        - "{{ doc_path }}"
+
+    - name: Create Python App
+      copy:
+        dest: "{{ test_path }}/app.py"
+        owner: "{{ test_user }}"
+        content: |
+          import pandas as pd
+          import os
+          from datetime import datetime
+          
+          print("Hello World - Running Python Test")
+          print(f"Pandas version installed: {pd.__version__}")
+          
+          # Log ke folder mapping /data-log
+          with open('/app/logs/app.log', 'a') as f:
+              f.write(f"{datetime.now()} - Jenkins-Deployer: Test Success\n")
+          
+          # Write ke folder mapping /data-doc
+          with open('/app/docs/test.txt', 'w') as f:
+              f.write("File test.txt berhasil dibuat di mapping /data-doc\n")
+
+    - name: Create Dockerfile
+      copy:
+        dest: "{{ test_path }}/Dockerfile"
+        owner: "{{ test_user }}"
+        content: |
+          FROM python:3.9-slim
+          RUN pip install pandas
+          WORKDIR /app
+          COPY app.py .
+          RUN mkdir -p /app/logs /app/docs
+          CMD ["python", "app.py"]
+
+    - name: Create Docker Compose
+      copy:
+        dest: "{{ test_path }}/docker-compose.yml"
+        owner: "{{ test_user }}"
+        content: |
+          services:
+            py-app:
+              build: .
+              volumes:
+                - {{ log_path }}:/app/logs
+                - {{ doc_path }}:/app/docs
+
+    # =======================================================
+    # 3. RUN TEST (Sebagai User jenkins-deployer)
+    # =======================================================
+    - name: Run Docker Compose Up
+      shell: "docker compose up --build"
+      args:
+        chdir: "{{ test_path }}"
+      become_user: "{{ test_user }}"
+      register: test_result
+
+    - name: Show App Output
+      debug:
+        msg: "{{ test_result.stdout_lines }}"
+
+    # =======================================================
+    # 4. VERIFIKASI ISI FOLDER MAPPING
+    # =======================================================
+    - name: List contents of /data-log/test_python
+      command: "ls -laR {{ log_path }}"
+      register: log_contents
+      changed_when: false
+
+    - name: List contents of /data-doc/test_python
+      command: "ls -laR {{ doc_path }}"
+      register: doc_contents
+      changed_when: false
+
+    - name: Show Directory Contents
+      debug:
+        msg:
+          - "--- ISI FOLDER LOGS ---"
+          - "{{ log_contents.stdout_lines }}"
+          - "--- ISI FOLDER DOCS ---"
+          - "{{ doc_contents.stdout_lines }}"
+
+    - name: Verifikasi isi file test.txt di host
+      command: "cat {{ doc_path }}/test.txt"
+      register: cat_result
+      changed_when: false
+
+    - name: Show File Content
+      debug:
+        msg: "Isi file test.txt: {{ cat_result.stdout }}"
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted

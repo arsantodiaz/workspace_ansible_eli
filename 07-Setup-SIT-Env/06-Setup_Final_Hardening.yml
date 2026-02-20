@@ -1,0 +1,138 @@
+---
+- name: Smart Hardening (Timezone, Swap, ACL, and Outbound Firewall)
+  hosts: sit_ubuntu
+  become: yes
+  vars:
+    # 1. Config Timezone
+    target_timezone: "Asia/Jakarta"
+
+    # 2. Config Swap
+    swap_file_path: /swapfile
+    swap_file_size_mb: 4096
+
+    # 3. Config User & ACL
+    data_admin_users:
+      - "endiaz"
+      - "sys-admin-eli"
+      - "jenkins-deployer"
+
+    # 4. Config Ports & IPs
+    allowed_ports: [22, 80, 443, 9100, 1514, 1515, 53]
+    wazuh_manager_ip: "172.16.203.18"
+
+    # List IP yang diizinkan (Trusted Zone)
+    trusted_subnets:
+      - { ip: "172.16.134.0/24", name: "Laptop Physical Network" }
+      - { ip: "172.24.240.0/20", name: "Laptop WSL Network" }
+      - { ip: "172.16.204.0/24", name: "SIT Internal (MW & EX)" }
+      - { ip: "172.16.163.0/24", name: "SIT Internal (IN101)" }
+      - { ip: "172.16.203.18/32", name: "Wazuh Manager Server" }
+      - { ip: "192.168.10.75/32", name: "Jenkins Agent" }
+      - { ip: "8.8.8.8/32", name: "Google DNS" }
+
+  tasks:
+    # --- [ Intelligence & Timezone ] ---
+    - name: Kumpulkan informasi Service yang jalan
+      service_facts:
+
+    - name: Set Timezone
+      timezone:
+        name: "{{ target_timezone }}"
+
+    # --- [ Smart NTP Handling ] ---
+    - name: "[NTP] Configure Chrony"
+      service: { name: chrony, state: started, enabled: yes }
+      when: "'chrony.service' in services"
+      register: chrony_status
+      failed_when: false
+
+    - name: "[NTP] Configure NTP Classic"
+      service: { name: ntp, state: started, enabled: yes }
+      when: "'ntp.service' in services"
+      register: ntp_status
+      failed_when: false
+
+    - name: "[NTP] Fallback to systemd-timesyncd"
+      systemd: { name: systemd-timesyncd, state: started, enabled: yes, masked: no }
+      when: (chrony_status is skipped or chrony_status is failed) and (ntp_status is skipped or ntp_status is failed)
+
+    # --- [ Swap Memory ] ---
+    - name: Cek Swap
+      command: swapon --show
+      register: swap_check
+      changed_when: false
+
+    - name: Setup Swap File
+      block:
+        - command: dd if=/dev/zero of={{ swap_file_path }} bs=1M count={{ swap_file_size_mb }}
+        - file: path={{ swap_file_path }} mode='0600'
+        - command: mkswap {{ swap_file_path }}
+        - command: swapon {{ swap_file_path }}
+        - mount: { name: none, src: "{{ swap_file_path }}", fstype: swap, opts: sw, state: present }
+      when: swap_check.stdout == ""
+
+    # --- [ ACL Data Folder ] ---
+    - name: Install ACL package
+      apt: name=acl state=present
+
+    - name: Pastikan /data ada
+      file: path=/data state=directory mode='0775'
+
+    - name: Set ACL for Admins
+      acl:
+        path: /data
+        entity: "{{ item }}"
+        etype: user
+        permissions: rwx
+        state: present
+        recursive: yes
+      loop: "{{ data_admin_users }}"
+
+    # --- [ Smart Firewall Configuration ] ---
+    - name: Cek status Firewalld
+      set_fact:
+        firewalld_active: "{{ 'firewalld.service' in services and services['firewalld.service']['state'] == 'running' }}"
+
+    # OPSI A: Jika Firewalld Aktif (Misal di server lain atau Manager)
+    - name: "[Firewall - Firewalld] Setup"
+      block:
+        - name: "[Firewall] Trust Subnets"
+          firewalld: { source: "{{ item.ip }}", zone: trusted, permanent: yes, state: enabled, immediate: yes }
+          loop: "{{ trusted_subnets }}"
+        - name: "[Firewall] Open Custom Ports"
+          firewalld: { port: "{{ item }}/tcp", permanent: yes, state: enabled, immediate: yes }
+          loop: "{{ allowed_ports }}"
+      when: firewalld_active
+
+    # OPSI B: Jika Firewalld TIDAK Aktif (Pakai UFW - Standar Ubuntu SIT)
+    - name: "[Firewall - UFW] Setup"
+      block:
+        - apt: name=ufw state=present
+        - ufw: state=reset
+        - ufw: default=deny direction=incoming
+        - ufw: default=allow direction=outgoing
+
+        # Inbound (Akses Masuk)
+        - ufw: { rule: allow, port: "{{ item }}", proto: tcp }
+          loop: "{{ allowed_ports }}"
+        - ufw: { rule: allow, src: "{{ item.ip }}", comment: "{{ item.name }}" }
+          loop: "{{ trusted_subnets }}"
+
+        # Outbound (Akses Keluar - FIX KONEKSI WAZUH & DOCKER)
+        - name: "[Firewall] Allow Outbound Critical Traffic"
+          ufw:
+            rule: allow
+            direction: out
+            port: "{{ item.port }}"
+            proto: "{{ item.proto | default('any') }}"
+            dest: "{{ item.dest | default('any') }}"
+          loop:
+            - { port: '53', proto: 'udp' }   # DNS
+            - { port: '53', proto: 'tcp' }   # DNS TCP
+            - { port: '443', proto: 'tcp' }  # HTTPS (Docker Pull)
+            - { port: '80', proto: 'tcp' }   # HTTP (Repo Update)
+            - { port: '1514', dest: "{{ wazuh_manager_ip }}" } # Wazuh Data
+            - { port: '1515', dest: "{{ wazuh_manager_ip }}" } # Wazuh Auth/Regis
+
+        - ufw: state=enabled
+      when: not firewalld_active

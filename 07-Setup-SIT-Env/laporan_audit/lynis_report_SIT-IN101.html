@@ -33,7 +33,7 @@
   Operating system version:  24.04
   Kernel version:            6.8.0
   Hardware platform:         x86_64
-  Hostname:                  SIT-EX102
+  Hostname:                  SIT-IN101
   ---------------------------------------------------
   Profiles:                  /etc/lynis/default.prf
   Log file:                  /var/log/lynis.log
@@ -71,16 +71,19 @@ Note: plugins have more extensive tests and may take several minutes to complete
 - Authentication:
 - PAM (Pluggable Authentication Modules):
 
-  <span style="color:dimgray;background-color:yellow;">[WARNING]</span>: Test DEB-0001 had a long execution: 14.476155 seconds
+  <span style="color:dimgray;background-color:yellow;">[WARNING]</span>: Test DEB-0001 had a long execution: 18.980414 seconds
 
 - libpam-tmpdir [ <span style="font-weight:bold;color:red;">Not Installed</span> ]
 - File System Checks:
 - DM-Crypt, Cryptsetup &amp; Cryptmount:
+
+  <span style="color:dimgray;background-color:yellow;">[WARNING]</span>: Test DEB-0280 had a long execution: 14.150562 seconds
+
 - Checking / on /dev/sda2 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
 - Checking /data on /dev/sdb1 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
 - Checking /boot/efi on /dev/sda1 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
-- Checking /tmp on /dev/sda6 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
 - Checking /home on /dev/sda7 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
+- Checking /tmp on /dev/sda6 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
 - Checking /var on /dev/sda3 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
 - Checking /var/lib/docker on /dev/sda5 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
 - Checking /var/log on /dev/sda4 [ <span style="font-weight:bold;color:white;">NOT ENCRYPTED</span> ]
@@ -99,21 +102,19 @@ Note: plugins have more extensive tests and may take several minutes to complete
 - Checking presence GRUB2 [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
 - Checking for password protection [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - Check running services (systemctl) [ <span style="font-weight:bold;color:lime;">DONE</span> ]
-Result: found 26 running services
+Result: found 27 running services
 - Check enabled services at boot (systemctl) [ <span style="font-weight:bold;color:lime;">DONE</span> ]
-Result: found 55 enabled services
+Result: found 53 enabled services
 - Check startup files (permissions) [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - Running 'systemd-analyze security'
 - ModemManager.service: [ <span style="font-weight:bold;color:white;">MEDIUM</span> ]
 - atd.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - auditd.service: [ <span style="font-weight:bold;color:yellow;">EXPOSED</span> ]
 - chrony.service: [ <span style="font-weight:bold;color:lime;">PROTECTED</span> ]
-- containerd.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - cron.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - dbus.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - dm-event.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - dmesg.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
-- docker.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - emergency.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - fail2ban.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - fwupd.service: [ <span style="font-weight:bold;color:yellow;">EXPOSED</span> ]
@@ -124,6 +125,7 @@ Result: found 55 enabled services
 - multipathd.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - networkd-dispatcher.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - open-vm-tools.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
+- packagekit.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - plymouth-start.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
 - polkit.service: [ <span style="font-weight:bold;color:lime;">PROTECTED</span> ]
 - postfix@-.service: [ <span style="font-weight:bold;color:red;">UNSAFE</span> ]
@@ -163,7 +165,7 @@ CPU support: PAE and/or NoeXecute supported [ <span style="font-weight:bold;colo
 - Checking kernel version and release [ <span style="font-weight:bold;color:lime;">DONE</span> ]
 - Checking kernel type [ <span style="font-weight:bold;color:lime;">DONE</span> ]
 - Checking loaded kernel modules [ <span style="font-weight:bold;color:lime;">DONE</span> ]
-Found 100 active modules
+Found 92 active modules
 - Checking Linux kernel configuration file [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
 - Checking default I/O kernel scheduler [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
 - Checking for available kernel update [ <span style="font-weight:bold;color:lime;">OK</span> ]
@@ -206,7 +208,7 @@ Found 100 active modules
 - PAM configuration files (pam.d) [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
 - PAM modules [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
 - LDAP module in PAM [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
-- Accounts without expire date [ <span style="font-weight:bold;color:yellow;">SUGGESTION</span> ]
+- Accounts without expire date [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - Accounts without password [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - Locked accounts [ <span style="font-weight:bold;color:red;">FOUND</span> ]
 - User password aging (minimum) [ <span style="font-weight:bold;color:lime;">CONFIGURED</span> ]
@@ -251,14 +253,14 @@ Result: found 9 shells (valid shells: 9).
 - Mount options of /var/log [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
 - Mount options of /var/log/audit [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
 - Mount options of /var/tmp [ <span style="font-weight:bold;color:lime;">HARDENED</span> ]
-- Total without nodev:8 noexec:12 nosuid:6 ro or noexec (W^X): 12 of total 33
+- Total without nodev:6 noexec:10 nosuid:4 ro or noexec (W^X): 10 of total 31
 - /var/tmp is bound to /tmp [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - Disable kernel support of some filesystems
 
 [+] <span style="font-weight:bold;color:yellow;">USB Devices</span>
 ------------------------------------
 - Checking usb-storage driver (modprobe config) [ <span style="font-weight:bold;color:lime;">DISABLED</span> ]
-- Checking USB devices authorization [ <span style="font-weight:bold;color:yellow;">ENABLED</span> ]
+- Checking USB devices authorization [ <span style="font-weight:bold;color:lime;">DISABLED</span> ]
 - Checking USBGuard [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
 
 [+] <span style="font-weight:bold;color:yellow;">Storage</span>
@@ -291,7 +293,7 @@ Result: found 9 shells (valid shells: 9).
 - Checking APT package database [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - Checking vulnerable packages [ <span style="font-weight:bold;color:lime;">OK</span> ]
 
-  <span style="color:dimgray;background-color:yellow;">[WARNING]</span>: Test PKGS-7392 had a long execution: 13.263102 seconds
+  <span style="color:dimgray;background-color:yellow;">[WARNING]</span>: Test PKGS-7392 had a long execution: 38.695840 seconds
 
 - Checking upgradeable packages [ <span style="font-weight:bold;color:yellow;">FOUND</span> ]
 - Checking package audit tool [ <span style="font-weight:bold;color:lime;">INSTALLED</span> ]
@@ -305,10 +307,10 @@ Configuration method [ <span style="font-weight:bold;color:white;">MANUAL</span>
 IPv6 only [ <span style="font-weight:bold;color:white;">NO</span> ]
 - Checking configured nameservers
 - Testing nameservers
-Nameserver: 172.16.202.12 [ <span style="font-weight:bold;color:lime;">OK</span> ]
+Nameserver: 172.16.202.12 [ <span style="font-weight:bold;color:red;">NO RESPONSE</span> ]
 Nameserver: 172.16.204.1 [ <span style="font-weight:bold;color:red;">NO RESPONSE</span> ]
 Nameserver: 8.8.8.8 [ <span style="font-weight:bold;color:lime;">OK</span> ]
-Nameserver: 172.16.204.1 [ <span style="font-weight:bold;color:red;">NO RESPONSE</span> ]
+Nameserver: 172.16.163.1 [ <span style="font-weight:bold;color:red;">NO RESPONSE</span> ]
 Nameserver: 8.8.8.8 [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - Minimal of 2 responsive nameservers [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - DNSSEC supported (systemd-resolved) [ <span style="font-weight:bold;color:red;">UNKNOWN</span> ]
@@ -449,33 +451,25 @@ No database engines found
 ------------------------------------
 - Checking for expired SSL certificates [0/151] [ <span style="font-weight:bold;color:lime;">NONE</span> ]
 
-  <span style="color:dimgray;background-color:yellow;">[WARNING]</span>: Test CRYP-7902 had a long execution: 20.258792 seconds
+  <span style="color:dimgray;background-color:yellow;">[WARNING]</span>: Test CRYP-7902 had a long execution: 31.601545 seconds
 
 - Found 0 encrypted and 1 unencrypted swap devices in use. [ <span style="font-weight:bold;color:white;">OK</span> ]
 - Kernel entropy is sufficient [ <span style="font-weight:bold;color:lime;">YES</span> ]
 - HW RNG &amp; rngd [ <span style="font-weight:bold;color:yellow;">NO</span> ]
 - SW prng [ <span style="font-weight:bold;color:yellow;">NO</span> ]
-- MOR variable not found [ <span style="font-weight:bold;color:white;">WEAK</span> ]
+MOR-bit set [ <span style="font-weight:bold;color:lime;">YES</span> ]
 
 [+] <span style="font-weight:bold;color:yellow;">Virtualization</span>
 ------------------------------------
 
 [+] <span style="font-weight:bold;color:yellow;">Containers</span>
 ------------------------------------
-- Docker
-- Docker daemon [ <span style="font-weight:bold;color:lime;">RUNNING</span> ]
-- Docker info output (warnings) [ <span style="font-weight:bold;color:lime;">NONE</span> ]
-- Containers
-- Total containers [ <span style="font-weight:bold;color:white;">1</span> ]
-- Running containers [ <span style="font-weight:bold;color:lime;">1</span> ]
-- Unused containers [ <span style="font-weight:bold;color:yellow;">0</span> ]
-- File permissions [ <span style="font-weight:bold;color:lime;">OK</span> ]
 
 [+] <span style="font-weight:bold;color:yellow;">Security frameworks</span>
 ------------------------------------
 - Checking presence AppArmor [ <span style="font-weight:bold;color:lime;">FOUND</span> ]
 - Checking AppArmor status [ <span style="font-weight:bold;color:lime;">ENABLED</span> ]
-Found 49 unconfined processes
+Found 59 unconfined processes
 - Checking presence SELinux [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
 - Checking presence TOMOYO Linux [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
 - Checking presence grsecurity [ <span style="font-weight:bold;color:white;">NOT FOUND</span> ]
@@ -559,7 +553,7 @@ Directory: /etc/cron.monthly [ <span style="font-weight:bold;color:lime;">OK</sp
 - net.ipv4.conf.all.accept_redirects (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - net.ipv4.conf.all.accept_source_route (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - net.ipv4.conf.all.bootp_relay (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
-- net.ipv4.conf.all.forwarding (exp: 0) [ <span style="font-weight:bold;color:red;">DIFFERENT</span> ]
+- net.ipv4.conf.all.forwarding (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - net.ipv4.conf.all.log_martians (exp: 1) [ <span style="font-weight:bold;color:red;">DIFFERENT</span> ]
 - net.ipv4.conf.all.mc_forwarding (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
 - net.ipv4.conf.all.proxy_arp (exp: 0) [ <span style="font-weight:bold;color:lime;">OK</span> ]
@@ -594,12 +588,15 @@ Directory: /etc/cron.monthly [ <span style="font-weight:bold;color:lime;">OK</sp
 
   -[ <span style="font-weight:bold;color:white;">Lynis 3.0.9 Results</span> ]-
 
-  <span style="font-weight:bold;color:red;">Warnings</span> (2):
+  <span style="font-weight:bold;color:red;">Warnings</span> (3):
   <span style="font-weight:bold;color:white;">----------------------------</span>
-  <span style="font-weight:bold;color:red;">!</span> Nameserver 172.16.204.1 does not respond [NETW-2704] 
+  <span style="font-weight:bold;color:red;">!</span> Nameserver 172.16.202.12 does not respond [NETW-2704] 
       https://cisofy.com/lynis/controls/NETW-2704/
 
   <span style="font-weight:bold;color:red;">!</span> Nameserver 172.16.204.1 does not respond [NETW-2704] 
+      https://cisofy.com/lynis/controls/NETW-2704/
+
+  <span style="font-weight:bold;color:red;">!</span> Nameserver 172.16.163.1 does not respond [NETW-2704] 
       https://cisofy.com/lynis/controls/NETW-2704/
 
   <span style="font-weight:bold;color:yellow;">Suggestions</span> (30):
@@ -629,9 +626,6 @@ Directory: /etc/cron.monthly [ <span style="font-weight:bold;color:lime;">OK</sp
   <span style="font-weight:bold;color:yellow;">*</span> Configure password hashing rounds in /etc/login.defs [AUTH-9230] 
       <span style="color:white;">https://cisofy.com/lynis/controls/AUTH-9230/</span>
 
-  <span style="font-weight:bold;color:yellow;">*</span> When possible set expire dates for all password protected accounts [AUTH-9282] 
-      <span style="color:white;">https://cisofy.com/lynis/controls/AUTH-9282/</span>
-
   <span style="font-weight:bold;color:yellow;">*</span> Look at the locked accounts and consider removing them [AUTH-9284] 
       <span style="color:white;">https://cisofy.com/lynis/controls/AUTH-9284/</span>
 
@@ -640,6 +634,9 @@ Directory: /etc/cron.monthly [ <span style="font-weight:bold;color:lime;">OK</sp
 
   <span style="font-weight:bold;color:yellow;">*</span> Purge old/removed packages (3 found) with aptitude purge or dpkg --purge command. This will cleanup old configuration files, cron jobs and startup scripts. [PKGS-7346] 
       <span style="color:white;">https://cisofy.com/lynis/controls/PKGS-7346/</span>
+
+  <span style="font-weight:bold;color:yellow;">*</span> Check connection to this nameserver and make sure no outbound DNS queries are blocked (port 53 UDP and TCP). [NETW-2704] 
+      <span style="color:white;">https://cisofy.com/lynis/controls/NETW-2704/</span>
 
   <span style="font-weight:bold;color:yellow;">*</span> Check connection to this nameserver and make sure no outbound DNS queries are blocked (port 53 UDP and TCP). [NETW-2704] 
       <span style="color:white;">https://cisofy.com/lynis/controls/NETW-2704/</span>
@@ -715,8 +712,8 @@ Directory: /etc/cron.monthly [ <span style="font-weight:bold;color:lime;">OK</sp
 
   <span style="font-weight:bold;color:white;">Lynis security scan details</span>:
 
-  <span style="color:aqua;">Hardening index</span> : <span style="font-weight:bold;color:white;">80</span> [<span style="font-weight:bold;color:lime;">################</span>    ]
-  <span style="color:aqua;">Tests performed</span> : <span style="font-weight:bold;color:white;">270</span>
+  <span style="color:aqua;">Hardening index</span> : <span style="font-weight:bold;color:white;">81</span> [<span style="font-weight:bold;color:lime;">################</span>    ]
+  <span style="color:aqua;">Tests performed</span> : <span style="font-weight:bold;color:white;">263</span>
   <span style="color:aqua;">Plugins enabled</span> : <span style="font-weight:bold;color:white;">1</span>
 
   <span style="font-weight:bold;color:white;">Components</span>:

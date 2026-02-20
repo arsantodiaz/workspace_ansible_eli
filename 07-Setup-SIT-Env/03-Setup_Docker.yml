@@ -1,9 +1,9 @@
 ---
-- name: Install Docker Production Grade (Custom Storage & Config)
+- name: Install Docker Production Grade (Custom Storage & Mapping)
   hosts: sit_ubuntu
   become: yes
   vars:
-    # User Admin Docker
+    # Hanya user yang SUDAH EKSIS di server saat ini
     docker_admin_users:
       - "endiaz"
       - "sys-admin-eli"
@@ -13,15 +13,20 @@
     containerd_target_dir: "/var/lib/docker/containerd_storage"
     containerd_link_path: "/var/lib/containerd"
 
+    # Mapping Folder Request (Arahkan ke /data)
+    folder_mappings:
+      - { src: "/data/data-log", dest: "/data-log" }
+      - { src: "/data/data-doc", dest: "/data-doc" }
+
   tasks:
     # =======================================================
-    # STEP 1: PERSIAPAN STORAGE (Agar containerd masuk partisi besar)
+    # STEP 1: PERSIAPAN STORAGE (containerd Link)
     # =======================================================
     - name: Pastikan Mount Point Docker ada
       file:
         path: "{{ docker_partition_mount }}"
         state: directory
-        mode: '0710'
+        mode: '0711'
 
     - name: Buat Folder Khusus containerd di partisi besar
       file:
@@ -34,7 +39,7 @@
         path: "{{ containerd_link_path }}"
       register: containerd_stat
 
-    - name: Hapus folder asli jika bukan symlink (Clean start)
+    - name: Hapus folder asli jika bukan symlink
       file:
         path: "{{ containerd_link_path }}"
         state: absent
@@ -50,12 +55,9 @@
     # =======================================================
     # STEP 2: INSTALL DOCKER ENGINE
     # =======================================================
-    - name: Install dependencies (curl, ca-certificates)
+    - name: Install dependencies (curl, gnupg, dll)
       apt:
-        name:
-          - ca-certificates
-          - curl
-          - gnupg
+        name: [ca-certificates, curl, gnupg]
         state: present
         update_cache: yes
 
@@ -69,14 +71,11 @@
 
     - name: Add Docker Repository
       shell: |
-        echo \
-        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-        $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-        tee /etc/apt/sources.list.d/docker.list > /dev/null
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
       args:
         creates: /etc/apt/sources.list.d/docker.list
 
-    - name: Install Docker Packages
+    - name: Install Docker Packages (Engine & Compose)
       apt:
         name:
           - docker-ce
@@ -88,7 +87,7 @@
         update_cache: yes
 
     # =======================================================
-    # STEP 3: KONFIGURASI DAEMON (Config PRO Kamu)
+    # STEP 3: KONFIGURASI DAEMON (Settingan PRO)
     # =======================================================
     - name: Apply Docker Daemon Configuration
       copy:
@@ -119,15 +118,49 @@
       notify: Restart Docker
 
     # =======================================================
-    # STEP 4: USER ACCESS
+    # STEP 4: CUSTOM MAPPING FOLDER (/data-log & /data-doc)
     # =======================================================
-    - name: Add admin users to docker group
+    - name: Create physical source directories in /data
+      file:
+        path: "{{ item.src }}"
+        state: directory
+        owner: root
+        group: docker
+        mode: '0775'
+      loop: "{{ folder_mappings }}"
+
+    - name: Create symbolic links at root level
+      file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: link
+        force: yes
+      loop: "{{ folder_mappings }}"
+
+    # =======================================================
+    # STEP 5: USER ACCESS (Existing Users Only)
+    # =======================================================
+    - name: Add existing admin users to docker group
       user:
         name: "{{ item }}"
         groups: docker
         append: yes
       loop: "{{ docker_admin_users }}"
-      ignore_errors: yes
+
+    # =======================================================
+    # STEP 6: VERIFIKASI RUNNING DOCKER
+    # =======================================================
+    - name: Jalankan Restart Docker sekarang juga (Flush Handlers)
+      meta: flush_handlers
+
+    - name: Test Docker Run Hello World (Tarik image dari internet)
+      command: docker run --rm hello-world
+      register: docker_test
+      changed_when: false
+
+    - name: Tampilkan hasil verifikasi Docker
+      debug:
+        msg: "Docker Berhasil Terinstall dan bisa running: {{ docker_test.stdout_lines[1] }}"
 
   handlers:
     - name: Restart Docker

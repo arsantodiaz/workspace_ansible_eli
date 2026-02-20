@@ -60,5 +60,17 @@ ansible_password: !vault |
 
 ```bash
 ansible sit_ubuntu -i inventory -m ping -u endiaz
-ansible-playbook -i inventory 00-Install_Tools.yml 
+
+ansible-playbook -i inventory 07-Setup-SIT-Env/00-Update_DNS_Resolver.yml
+
+```
+
+##### Jalankan berdasarkan limit
+```
+ansible-playbook -i inventory 07-Setup-SIT-Env/03-Add_Additional_Users.yml --limit SIT-IN101 --ask-vault-pass -K
+```
+
+##### Restart Wazuh di semua host
+```
+ansible sit_ubuntu -m service -a "name=wazuh-agent state=restarted" --become -K
 ```

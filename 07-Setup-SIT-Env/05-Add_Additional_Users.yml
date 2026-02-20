@@ -1,0 +1,63 @@
+---
+- name: Add Additional Admin Users & Fix SSH Whitelist
+  hosts: sit_ubuntu
+  become: yes
+  vars:
+    # Daftar user dan password
+    additional_users:
+      - { name: "thomas", pass: "VgQ1Ib0JAZ0usrQ***" }
+      - { name: "andy", pass: "EJIDUwbX911***W0DK" }
+      - { name: "bona", pass: "bYMPPYA***QkpQpGUd" }
+
+    # DAFTAR SOURCE OF TRUTH (Sesuai yang kamu inginkan)
+    final_allow_users: "sys-admin-eli endiaz jenkins-deployer thomas andy bona"
+
+  tasks:
+    # -------------------------------------------------------
+    # 1. MANAGEMENT GROUP
+    # -------------------------------------------------------
+    - name: Ensure group 'sugroup' exists
+      group:
+        name: sugroup
+        state: present
+
+    # -------------------------------------------------------
+    # 2. CREATE USERS (FIXED: Loop added)
+    # -------------------------------------------------------
+    - name: Create or Update Users (Thomas, Andy, Bona)
+      user:
+        name: "{{ item.name }}"
+        password: "{{ item.pass | trim | password_hash('sha512') }}"
+        shell: /bin/bash
+        groups: sudo,sugroup  # Tanpa docker
+        append: yes
+        state: present
+        update_password: always
+      loop: "{{ additional_users }}" # <--- INI YANG TADI KETINGGALAN
+
+    - name: Set Password Age (Immediate Access)
+      shell: "chage -m 0 -M 99999 {{ item.name }}"
+      changed_when: false
+      loop: "{{ additional_users }}" # <--- INI JUGA HARUS PAKAI LOOP
+
+    # -------------------------------------------------------
+    # 3. FIX SSH WHITELIST (Pembersihan Duplikat)
+    # -------------------------------------------------------
+    - name: Set Clean AllowUsers List (Overwrite messy lines)
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^AllowUsers'
+        line: "AllowUsers {{ final_allow_users }}"
+        state: present
+      notify: Restart SSH
+
+    - name: Cleanup duplicate names or spaces in AllowUsers
+      shell: |
+        sed -i 's/\s\+/\ /g' /etc/ssh/sshd_config
+      notify: Restart SSH
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted

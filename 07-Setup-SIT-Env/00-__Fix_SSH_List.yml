@@ -1,0 +1,41 @@
+---
+- name: Fix SSH Whitelist and Reset Thomas Password
+  hosts: SIT-IN101  # Fokus ke server yang mau kamu loginin
+  become: yes
+  vars:
+    # Daftar user yang WAJIB ada di whitelist
+    clean_allow_users: "sys-admin-eli endiaz jenkins-deployer thomas andy bona"
+    thomas_pass: "VgQ1Ib0JAZ0usrQ***"
+
+  tasks:
+    # -------------------------------------------------------
+    # 1. BERSIHKAN SSH CONFIG
+    # -------------------------------------------------------
+    - name: Clean up and set unique AllowUsers line
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^AllowUsers'
+        line: "AllowUsers {{ clean_allow_users }}"
+        state: present
+      notify: Restart SSH
+
+    # -------------------------------------------------------
+    # 2. PASTIKAN PASSWORD THOMAS VALID
+    # -------------------------------------------------------
+    - name: Force update Thomas password (just in case)
+      user:
+        name: thomas
+        password: "{{ thomas_pass | trim | password_hash('sha512') }}"
+        update_password: always # Paksa update untuk ngetes
+        groups: sudo,sugroup
+        append: yes
+
+    - name: Ensure Thomas is not locked
+      shell: "passwd -u thomas"
+      ignore_errors: yes
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted
